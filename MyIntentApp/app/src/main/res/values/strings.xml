@@ -1,0 +1,12 @@
+<resources>
+  <string name="app_name">MyIntentApp</string>
+  <string name="changeActivity">PINDAH ACTIVITY</string>
+  <string name="changeActivityWithData">PINDAH ACTIVITY DENGAN DATA</string>
+  <string name="changeActivityWithObject">PINDAH ACTIVITY DENGAN OBJECT</string>
+  <string name="dialNumber">DIAL A NUMBER</string>
+  <string name="changeActivityWithResult">PINDAH ACTIVITY DENGAN RESULT</string>
+  <string name="activityResult">Hasil dari Activity</string>
+  <string name="chooseNumber">Pilih angka yang kamu suka</string>
+  <string name="choose">Pilih</string>
+  <string name="extras">Ini Dari Extra</string>
+</resources>
