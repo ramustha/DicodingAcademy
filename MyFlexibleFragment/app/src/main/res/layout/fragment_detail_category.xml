@@ -1,0 +1,44 @@
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DetailCategoryFragment" android:id="@+id/linearLayout3">
+  <TextView
+      android:id="@+id/tv_category_name"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="Category Name"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      android:layout_marginTop="8dp" app:layout_constraintEnd_toEndOf="parent"
+      android:layout_marginEnd="8dp" android:layout_marginStart="8dp"/>
+  <TextView
+      android:id="@+id/tv_category_description"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="Category Description"
+      android:layout_marginTop="8dp"
+      app:layout_constraintTop_toBottomOf="@+id/tv_category_name"
+      app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
+      android:layout_marginStart="8dp" android:layout_marginEnd="8dp"/>
+  <Button
+      android:id="@+id/btn_profile"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="Ke Halaman Activity"
+      android:layout_marginTop="16dp"
+      app:layout_constraintTop_toBottomOf="@+id/tv_category_description"
+      app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
+      android:layout_marginStart="8dp" android:layout_marginEnd="8dp"/>
+  <Button
+      android:id="@+id/btn_show_dialog"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="Tampilkan sebuah dialog"
+      app:layout_constraintTop_toBottomOf="@+id/btn_profile"
+      app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
+      android:layout_marginStart="8dp" android:layout_marginEnd="8dp"
+      android:layout_marginTop="8dp"/>
+</android.support.constraint.ConstraintLayout>
