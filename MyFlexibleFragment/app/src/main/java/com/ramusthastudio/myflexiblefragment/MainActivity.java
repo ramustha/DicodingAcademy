@@ -25,6 +25,13 @@ public class MainActivity extends AppCompatActivity {
     fragmentTransaction.commit();
   }
 
+  void removeFragment(Fragment aFragment) {
+    FragmentManager fragmentManager = getSupportFragmentManager();
+    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+    fragmentTransaction.remove(aFragment);
+    fragmentTransaction.commit();
+  }
+
   void replaceFragment(Fragment aFragment, String aTag) {
     replaceFragment(aFragment, aTag, null);
   }

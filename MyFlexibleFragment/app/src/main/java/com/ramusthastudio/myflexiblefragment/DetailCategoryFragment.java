@@ -56,6 +56,11 @@ public class DetailCategoryFragment extends Fragment implements View.OnClickList
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.btn_profile:
+        if (getActivity() instanceof MainActivity) {
+          MainActivity mainActivity = (MainActivity) getActivity();
+          mainActivity.replaceFragment(new HomeFragment(), HomeFragment.class.getSimpleName());
+        }
+
         break;
       case R.id.btn_show_dialog:
         OptionDialogFragment fragment = new OptionDialogFragment();

@@ -30,13 +30,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
   @Override
   public void onClick(View v) {
     if (v.getId() == R.id.btn_category) {
-      CategoryFragment mCategoryFragment = new CategoryFragment();
-      FragmentManager mFragmentManager = getFragmentManager();
-      FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
-      mFragmentTransaction.replace(R.id.frame_container, mCategoryFragment, CategoryFragment.class.getSimpleName());
-      mFragmentTransaction.addToBackStack(null);
-      mFragmentTransaction.commit();
+      CategoryFragment fragment = new CategoryFragment();
+
+      if (getActivity() instanceof MainActivity) {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.replaceFragment(fragment, CategoryFragment.class.getSimpleName());
+      }
     }
   }
-
 }
