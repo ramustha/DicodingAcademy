@@ -70,10 +70,10 @@ public class AlarmReceiver extends BroadcastReceiver {
   public void setRepeatingAlarm(Context context, long aDate, String message){
     AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
     if (alarmManager != null) {
+      int requestCode = NOTIF_ID_REPEATING;
       Intent intent = new Intent(context, AlarmReceiver.class);
       intent.putExtra(EXTRA_MESSAGE, message);
       intent.putExtra(EXTRA_TYPE, TYPE_REPEATING);
-      int requestCode = NOTIF_ID_ONETIME;
 
       PendingIntent pendingIntent =  PendingIntent.getBroadcast(context, requestCode, intent, 0);
       alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, aDate, AlarmManager.INTERVAL_DAY, pendingIntent);
