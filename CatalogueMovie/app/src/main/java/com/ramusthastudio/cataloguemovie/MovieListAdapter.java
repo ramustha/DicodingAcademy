@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.MovieListHolder> {
-  private static final SimpleDateFormat sDateFormat = new SimpleDateFormat("E, dd-MM-yyyy", Locale.getDefault());
+  public static final SimpleDateFormat sDateFormat = new SimpleDateFormat("E, dd-MM-yyyy", Locale.getDefault());
   private final Context fContext;
   private List<Result> fMovieList;
   private AdapterListener fClickListener;
@@ -27,7 +28,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
 
   @Override
   public MovieListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    View view = LayoutInflater.from(fContext).inflate(R.layout.movie_item, parent, false);
+    View view = LayoutInflater.from(fContext).inflate(R.layout.movie_list_item, parent, false);
     return new MovieListHolder(view);
   }
 
@@ -54,7 +55,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
   public MovieListAdapter addMovieList(List<Result> aMovieList) {
     if (fMovieList != null) {
       fMovieList.addAll(aMovieList);
-      notifyItemRangeChanged(fMovieList.size() - aMovieList.size(), fMovieList.size() - 1);
+      notifyItemRangeInserted(fMovieList.size() - aMovieList.size(), fMovieList.size() - 1);
     }
     return this;
   }
@@ -70,6 +71,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
 
   interface AdapterListener {
     void onClick(Result aResult);
+    void onClickShare(Result aResult);
   }
 
   class MovieListHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -77,6 +79,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
     private final TextView itemTitleView;
     private final TextView itemDateView;
     private final TextView itemRatingView;
+    private final ImageView itemShareBtn;
 
     public MovieListHolder(View itemView) {
       super(itemView);
@@ -85,13 +88,22 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
       itemTitleView = itemView.findViewById(R.id.itemTitle);
       itemDateView = itemView.findViewById(R.id.itemDate);
       itemRatingView = itemView.findViewById(R.id.itemRating);
+      itemShareBtn = itemView.findViewById(R.id.itemShare);
 
+      itemShareBtn.setOnClickListener(this);
       itemView.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-      fClickListener.onClick(fMovieList.get(getLayoutPosition()));
+      switch (v.getId()) {
+        case R.id.itemShare:
+          fClickListener.onClickShare(fMovieList.get(getLayoutPosition()));
+          break;
+        default:
+          fClickListener.onClick(fMovieList.get(getLayoutPosition()));
+          break;
+      }
     }
 
     private void bind(Result aMovie) {
@@ -106,7 +118,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
       if (aMovie.getReleaseDate() != null) {
         itemDateView.setText(sDateFormat.format(aMovie.getReleaseDate()));
       } else {
-        itemDateView.setText("Unknown");
+        itemDateView.setText(fContext.getString(R.string.unknown_string));
       }
       // itemDateView.setText(aMovie.getReleaseDate());
       itemRatingView.setText(String.valueOf(aMovie.getVoteAverage()));

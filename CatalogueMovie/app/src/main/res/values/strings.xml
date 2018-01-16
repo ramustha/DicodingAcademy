@@ -1,8 +1,14 @@
 <resources>
-  <string name="app_name">CatalogueMovie</string>
-  <string name="search_movie">Cari movies</string>
-  <string name="search">Cari</string>
+  <string name="app_name">Catalogue Movie</string>
 
-  <!-- TODO: Remove or change this placeholder text -->
-  <string name="hello_blank_fragment">Hello blank fragment</string>
+  <string name="search_movie_btn">Search</string>
+  <string name="search_movie_hint">Search movies</string>
+  <string name="blank_field_search">Must be filled</string>
+  <string name="unknown_string">Unknown</string>
+  <string name="close_btn">Close</string>
+
+  <string name="share_cont_desc">share movie</string>
+  <string name="movie_image_cont_desc">movie image</string>
+  <string name="release">Release</string>
+  <string name="title">Title</string>
 </resources>

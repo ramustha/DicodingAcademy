@@ -1,12 +1,13 @@
 package com.ramusthastudio.cataloguemovie;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.util.Log;
@@ -15,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 import com.firebase.jobdispatcher.JobParameters;
 import com.ramusthastudio.cataloguemovie.common.EndlessRecyclerViewScrollListener;
 import com.ramusthastudio.cataloguemovie.common.TextFilter;
@@ -25,6 +25,7 @@ import com.ramusthastudio.cataloguemovie.model.Result;
 import static com.ramusthastudio.cataloguemovie.BuildConfig.LANGUAGE;
 import static com.ramusthastudio.cataloguemovie.BuildConfig.SERVER_API;
 import static com.ramusthastudio.cataloguemovie.BuildConfig.SERVER_URL;
+import static com.ramusthastudio.cataloguemovie.MovieListAdapter.sDateFormat;
 
 public class MainFragment extends Fragment implements View.OnClickListener, Tasks.TaskListener<Moviedb> {
   private static final String ARG_PARAM = "param";
@@ -33,7 +34,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Task
   private SwipeRefreshLayout fSwipeRefreshView;
   private RecyclerView fMovieListView;
   private MovieListAdapter fMovieListAdapter;
-  private GridLayoutManager fGridLayoutManager;
+  private StaggeredGridLayoutManager fGridLayoutManager;
   private EndlessRecyclerViewScrollListener fScrollListener;
   private Tasks<Moviedb> fTasks;
 
@@ -53,7 +54,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Task
   public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     // Inflate the layout for this fragment
     View view = inflater.inflate(R.layout.fragment_main, container, false);
-    fGridLayoutManager = new GridLayoutManager(getContext(), 2);
+    fGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
 
     fSearchText = view.findViewById(R.id.searchText);
     fSearchBtn = view.findViewById(R.id.searchBtn);
@@ -102,6 +103,19 @@ public class MainFragment extends Fragment implements View.OnClickListener, Task
         FragmentManager fragmentManager = getChildFragmentManager();
         fragment.show(fragmentManager, DetailFragment.class.getSimpleName());
       }
+
+      @Override
+      public void onClickShare(final Result aResult) {
+        Log.d("MainFragment", "Shared");
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_SUBJECT, String.format("%s (%s) \n\n %s",
+            aResult.getTitle(),
+            sDateFormat.format(aResult.getReleaseDate()),
+            aResult.getOverview()));
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
+      }
     });
     return view;
   }
@@ -111,13 +125,19 @@ public class MainFragment extends Fragment implements View.OnClickListener, Task
     switch (v.getId()) {
       case R.id.searchBtn:
         Editable searchText = fSearchText.getText();
-        Log.d(MainFragment.class.getSimpleName(), searchText.toString());
+        if (searchText.toString().isEmpty()) {
+          if (getContext() != null) {
+            fSearchText.setError(getContext().getString(R.string.blank_field_search));
+          } else {
+            Log.d(MainFragment.class.getSimpleName(), searchText.toString());
 
-        fTasks.start(SERVER_URL + "/search/movie?api_key=" + SERVER_API + "&language=" + LANGUAGE + "&sort_by=popularity.desc&query=" + searchText.toString());
-        fSwipeRefreshView.setRefreshing(true);
-        fMovieListAdapter.clear();
-        fScrollListener.resetState();
-        fScrollListener.setEnabled(false);
+            fTasks.start(SERVER_URL + "/search/movie?api_key=" + SERVER_API + "&language=" + LANGUAGE + "&sort_by=popularity.desc&query=" + searchText.toString());
+            fSwipeRefreshView.setRefreshing(true);
+            fMovieListAdapter.clear();
+            fScrollListener.resetState();
+            fScrollListener.setEnabled(false);
+          }
+        }
         break;
     }
   }
