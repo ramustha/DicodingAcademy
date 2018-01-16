@@ -5,32 +5,25 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.widget.Toast;
-import com.firebase.jobdispatcher.Constraint;
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
-import com.firebase.jobdispatcher.Job;
-import com.firebase.jobdispatcher.Lifetime;
-import com.firebase.jobdispatcher.RetryStrategy;
-import com.firebase.jobdispatcher.Trigger;
+import com.ramusthastudio.cataloguemovie.model.Result;
 
-import static com.ramusthastudio.cataloguemovie.BuildConfig.LANGUAGE;
-import static com.ramusthastudio.cataloguemovie.BuildConfig.SERVER_API;
-import static com.ramusthastudio.cataloguemovie.BuildConfig.SERVER_URL;
-import static com.ramusthastudio.cataloguemovie.MovieService.DISPATCHER_TAG;
+import static com.ramusthastudio.cataloguemovie.MainFragment.ARG_PARAM;
 
 public class MainActivity extends AppCompatActivity {
-  private FirebaseJobDispatcher fMovieService;
+  public static final int REQUEST_CODE = 111;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    fMovieService = new FirebaseJobDispatcher(new GooglePlayDriver(this));
-    startJob();
 
-    addFragment(MainFragment.newInstance(""), MainFragment.class.getSimpleName());
+    if (getIntent().getSerializableExtra(ARG_PARAM) != null) {
+      final Result result = (Result) getIntent().getSerializableExtra(ARG_PARAM);
+      addFragment(MainFragment.newInstance(result), MainFragment.class.getSimpleName());
+    } else {
+      addFragment(MainFragment.newInstance(), MainFragment.class.getSimpleName());
+    }
+
   }
 
   void addFragment(Fragment aFragment, String aTag) {
@@ -57,51 +50,5 @@ public class MainActivity extends AppCompatActivity {
     mFragmentTransaction.replace(R.id.fragment_container, aFragment, aTag);
     mFragmentTransaction.addToBackStack(aToBackStack);
     mFragmentTransaction.commit();
-  }
-
-  private void startJob() {
-    Toast.makeText(this, "Dispatcher Created", Toast.LENGTH_SHORT).show();
-    Bundle myExtrasBundle = new Bundle();
-    myExtrasBundle.putString(MovieService.EXTRA_JOB_SERVICE, SERVER_URL + "/discover/movie?api_key=" + SERVER_API + "&language=" + LANGUAGE + "&sort_by=popularity.desc");
-
-    Job myJob = fMovieService.newJobBuilder()
-        // kelas service yang akan dipanggil
-        .setService(MovieService.class)
-        // unique tag untuk identifikasi job
-        .setTag(DISPATCHER_TAG)
-        // one-off job
-        // true job tersebut akan diulang, dan false job tersebut tidak diulang
-        .setRecurring(true)
-        // until_next_boot berarti hanya sampai next boot
-        // forever berarti akan berjalan meskipun sudah reboot
-        .setLifetime(Lifetime.UNTIL_NEXT_BOOT)
-        // waktu trigger 0 sampai 60 detik
-        .setTrigger(Trigger.executionWindow(0, 60 * 60))
-        // overwrite job dengan tag sama
-        .setReplaceCurrent(true)
-        // set waktu kapan akan dijalankan lagi jika gagal
-        .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
-        // set kondisi dari device
-        .setConstraints(
-            // hanya berjalan saat ada koneksi yang unmetered (contoh Wifi)
-            Constraint.ON_UNMETERED_NETWORK,
-            // hanya berjalan ketika device di charge
-            Constraint.DEVICE_CHARGING
-
-            // berjalan saat ada koneksi internet
-            //Constraint.ON_ANY_NETWORK
-
-            // berjalan saat device dalam kondisi idle
-            //Constraint.DEVICE_IDLE
-        )
-        .setExtras(myExtrasBundle)
-        .build();
-
-    fMovieService.mustSchedule(myJob);
-  }
-
-  private void cancelJob() {
-    Toast.makeText(this, "Dispatcher Cancelled", Toast.LENGTH_SHORT).show();
-    fMovieService.cancel(DISPATCHER_TAG);
   }
 }

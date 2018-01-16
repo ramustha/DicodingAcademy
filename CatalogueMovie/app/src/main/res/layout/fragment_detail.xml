@@ -3,16 +3,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    tools:context=".DetailFragment">
 
   <android.support.constraint.ConstraintLayout
       xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      tools:context=".DetailFragment">
+      android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/detailImage"
@@ -38,54 +38,54 @@
         app:layout_constraintTop_toTopOf="@+id/detailImage" android:layout_marginTop="8dp"
         android:textAlignment="center"/>
 
-    <TableLayout
-        android:id="@+id/tableDetail"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
-        app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/detailImage">
+  <TableLayout
+      android:id="@+id/tableDetail"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+      app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/detailImage">
 
-      <TableRow
-          android:id="@+id/rowTitle"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content">
+    <TableRow
+        android:id="@+id/rowTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:text="@string/title"
-            android:layout_width="70dp"/>
+      <TextView
+          android:text="@string/title"
+          android:layout_width="70dp"/>
 
-        <TextView
-            tools:text="Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/detailTitle"
-            android:textStyle="bold"/>
-      </TableRow>
+      <TextView
+          tools:text="Title"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:id="@+id/detailTitle"
+          android:textStyle="bold"/>
+    </TableRow>
 
-      <TableRow
-          android:id="@+id/rowPubDate"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content">
+    <TableRow
+        android:id="@+id/rowPubDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:text="@string/release"
-            android:layout_width="70dp"/>
+      <TextView
+          android:text="@string/release"
+          android:layout_width="70dp"/>
 
-        <TextView
-            android:id="@+id/detailDate"
-            tools:text="Release date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-      </TableRow>
+      <TextView
+          android:id="@+id/detailDate"
+          tools:text="Release date"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"/>
+    </TableRow>
 
-    </TableLayout>
+  </TableLayout>
 
   <TextView
       android:id="@+id/detailDesc"
       tools:text="Description"
       android:singleLine="false"
-      android:layout_width="0dp"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
       android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
@@ -96,20 +96,23 @@
       android:id="@+id/detailGenre"
       tools:text="Genre"
       android:singleLine="false"
-      android:layout_width="0dp"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
       app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
       android:textAlignment="center" android:textStyle="bold|italic" android:textSize="14sp"
       android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/detailDesc"/>
-  <Button
-      android:id="@+id/closeBtn"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="@string/close_btn"
-      android:layout_marginTop="8dp"
-      style="@style/ButtonGeneral"
-      app:layout_constraintTop_toBottomOf="@+id/detailGenre"/>
+    <Button
+        android:id="@+id/closeBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/close_btn"
+        android:layout_marginTop="16dp"
+        style="@style/ButtonGeneral"
+        app:layout_constraintTop_toBottomOf="@+id/detailGenre"
+        app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"/>
   </android.support.constraint.ConstraintLayout>
 
 </android.support.v4.widget.NestedScrollView>

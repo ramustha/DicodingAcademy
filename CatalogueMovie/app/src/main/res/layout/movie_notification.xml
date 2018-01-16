@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+  <ImageView
+      android:id="@+id/notifImageView"
+      android:layout_width="wrap_content"
+      android:layout_height="120dp"
+      android:src="@mipmap/ic_launcher_round"/>
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:padding="@dimen/activity_horizontal_margin"
+      android:layout_gravity="center">
+    <TextView
+        tools:text="Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/notifTitleView"/>
+
+    <TextView
+        tools:text="Rating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/notifRatingView"/>
+
+    <TextView
+        tools:text="Release"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/notifReleaseView"/>
+  </LinearLayout>
+
+</LinearLayout>

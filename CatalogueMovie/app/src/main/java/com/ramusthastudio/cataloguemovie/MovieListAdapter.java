@@ -1,11 +1,13 @@
 package com.ramusthastudio.cataloguemovie;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
@@ -35,7 +37,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
   @Override
   public void onBindViewHolder(MovieListHolder holder, int position) {
     Result movie = fMovieList.get(position);
-    holder.bind(movie);
+    holder.bind(position, movie);
   }
 
   public void setOnClickListener(AdapterListener aClickListener) {
@@ -106,12 +108,11 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
       }
     }
 
-    private void bind(Result aMovie) {
+    private void bind(final int aPosition, Result aMovie) {
       Glide
           .with(fContext)
           .load(BuildConfig.IMAGE_URL + "/w342" + aMovie.getPosterPath())
-          .into(itemImageView)
-          .clearOnDetach();
+          .into(itemImageView);
 
       itemTitleView.setText(aMovie.getTitle());
 

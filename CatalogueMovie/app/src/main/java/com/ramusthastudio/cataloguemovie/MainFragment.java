@@ -28,7 +28,7 @@ import static com.ramusthastudio.cataloguemovie.BuildConfig.SERVER_URL;
 import static com.ramusthastudio.cataloguemovie.MovieListAdapter.sDateFormat;
 
 public class MainFragment extends Fragment implements View.OnClickListener, Tasks.TaskListener<Moviedb> {
-  private static final String ARG_PARAM = "param";
+  public static final String ARG_PARAM = "result";
   private EditText fSearchText;
   private Button fSearchBtn;
   private SwipeRefreshLayout fSwipeRefreshView;
@@ -46,7 +46,15 @@ public class MainFragment extends Fragment implements View.OnClickListener, Task
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     if (getArguments() != null) {
-      String param = getArguments().getString(ARG_PARAM);
+      Result result = (Result) getArguments().getSerializable(ARG_PARAM);
+      if (result != null) {
+        Log.d(DetailFragment.class.getSimpleName(), result.toString());
+
+        DetailFragment fragment = new DetailFragment();
+        fragment.setResult(result);
+        FragmentManager fragmentManager = getChildFragmentManager();
+        fragment.show(fragmentManager, DetailFragment.class.getSimpleName());
+      }
     }
   }
 
@@ -157,10 +165,16 @@ public class MainFragment extends Fragment implements View.OnClickListener, Task
 
   @Override public Class<Moviedb> toClass() { return Moviedb.class; }
 
-  public static MainFragment newInstance(String param1) {
+  public static MainFragment newInstance() {
+    MainFragment fragment = new MainFragment();
+    fragment.setArguments(new Bundle());
+    return fragment;
+  }
+
+  public static MainFragment newInstance(Result aResult) {
     MainFragment fragment = new MainFragment();
     Bundle args = new Bundle();
-    args.putString(ARG_PARAM, param1);
+    args.putSerializable(ARG_PARAM, aResult);
     fragment.setArguments(args);
     return fragment;
   }
