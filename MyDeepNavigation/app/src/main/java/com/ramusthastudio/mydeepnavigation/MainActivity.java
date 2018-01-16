@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         .addParentStack(DetailActivity.class)
         .addNextIntent(notifDetailIntent)
         .getPendingIntent(110, PendingIntent.FLAG_UPDATE_CURRENT);
+
     NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
     NotificationCompat.Builder builder = new NotificationCompat.Builder(context)

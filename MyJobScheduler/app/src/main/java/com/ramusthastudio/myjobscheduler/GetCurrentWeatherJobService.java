@@ -48,7 +48,7 @@ public final class GetCurrentWeatherJobService extends JobService {
   }
 
   private void getCurrentWeather(final JobParameters aJobParameters) {
-    Log.d(TAG, "Running, getCurrentWeather: {}" + URL);
+    Log.d(TAG, "Running, getCurrentWeather: " + URL);
 
     sHttpClient.get(URL, new BaseJsonHttpResponseHandler<OpenWeather>() {
 
