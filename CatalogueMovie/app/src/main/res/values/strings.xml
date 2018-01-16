@@ -6,6 +6,7 @@
   <string name="blank_field_search">Must be filled</string>
   <string name="unknown_string">Unknown</string>
   <string name="close_btn">Close</string>
+  <string name="emptyorerror">Empty or Error</string>
 
   <string name="share_cont_desc">share movie</string>
   <string name="movie_image_cont_desc">movie image</string>

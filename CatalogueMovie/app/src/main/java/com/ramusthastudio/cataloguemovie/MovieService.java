@@ -78,7 +78,7 @@ public final class MovieService extends JobService implements Tasks.TaskListener
       builder = new NotificationCompat.Builder(context);
     }
 
-    final PendingIntent intent = PendingIntent.getActivity(context, REQUEST_CODE, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
+    final PendingIntent intent = PendingIntent.getActivity(context, REQUEST_CODE, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
     final RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.movie_notification);
     remoteViews.setImageViewResource(R.id.notifImageView, R.mipmap.ic_launcher_round);

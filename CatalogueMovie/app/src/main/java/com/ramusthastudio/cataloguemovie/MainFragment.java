@@ -1,5 +1,6 @@
 package com.ramusthastudio.cataloguemovie;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,6 +22,7 @@ import com.ramusthastudio.cataloguemovie.common.EndlessRecyclerViewScrollListene
 import com.ramusthastudio.cataloguemovie.common.TextFilter;
 import com.ramusthastudio.cataloguemovie.model.Moviedb;
 import com.ramusthastudio.cataloguemovie.model.Result;
+import java.util.ArrayList;
 
 import static com.ramusthastudio.cataloguemovie.BuildConfig.LANGUAGE;
 import static com.ramusthastudio.cataloguemovie.BuildConfig.SERVER_API;
@@ -43,8 +45,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, Task
   }
 
   @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+  public void onAttach(final Context context) {
+    super.onAttach(context);
     if (getArguments() != null) {
       Result result = (Result) getArguments().getSerializable(ARG_PARAM);
       if (result != null) {
@@ -56,6 +58,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, Task
         fragment.show(fragmentManager, DetailFragment.class.getSimpleName());
       }
     }
+
+    fMovieListAdapter = new MovieListAdapter(context);
   }
 
   @Override
@@ -75,7 +79,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, Task
     fMovieListView.setHasFixedSize(true);
     fMovieListView.setLayoutManager(fGridLayoutManager);
 
-    fMovieListAdapter = new MovieListAdapter(getContext());
     fMovieListView.setAdapter(fMovieListAdapter);
 
     fTasks = new Tasks<>(this);
@@ -85,6 +88,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Task
     fSwipeRefreshView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
       @Override
       public void onRefresh() {
+        fSearchText.setText(null);
         fMovieListAdapter.clear();
         fScrollListener.resetState();
         fScrollListener.setEnabled(true);
@@ -136,15 +140,15 @@ public class MainFragment extends Fragment implements View.OnClickListener, Task
         if (searchText.toString().isEmpty()) {
           if (getContext() != null) {
             fSearchText.setError(getContext().getString(R.string.blank_field_search));
-          } else {
-            Log.d(MainFragment.class.getSimpleName(), searchText.toString());
-
-            fTasks.start(SERVER_URL + "/search/movie?api_key=" + SERVER_API + "&language=" + LANGUAGE + "&sort_by=popularity.desc&query=" + searchText.toString());
-            fSwipeRefreshView.setRefreshing(true);
-            fMovieListAdapter.clear();
-            fScrollListener.resetState();
-            fScrollListener.setEnabled(false);
           }
+        } else {
+          Log.d(MainFragment.class.getSimpleName(), searchText.toString());
+
+          fTasks.start(SERVER_URL + "/search/movie?api_key=" + SERVER_API + "&language=" + LANGUAGE + "&sort_by=popularity.desc&query=" + searchText.toString());
+          fSwipeRefreshView.setRefreshing(true);
+          fMovieListAdapter.clear();
+          fScrollListener.resetState();
+          fScrollListener.setEnabled(false);
         }
         break;
     }
@@ -160,6 +164,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Task
   @Override
   public void onFailure(int statusCode, Throwable aThrowable, JobParameters aJobParameters) {
     Log.d(MainFragment.class.getSimpleName(), String.format("status %s, couse %s", statusCode, aThrowable));
+    fMovieListAdapter.setMovieList(new ArrayList<Result>());
     fSwipeRefreshView.setRefreshing(false);
   }
 

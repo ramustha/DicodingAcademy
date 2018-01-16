@@ -1,10 +1,7 @@
 package com.ramusthastudio.cataloguemovie;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +13,10 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.MovieListHolder> {
+public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
   public static final SimpleDateFormat sDateFormat = new SimpleDateFormat("E, dd-MM-yyyy", Locale.getDefault());
+  private static final int EMPTY_ITEM = 0;
+  private static final int MOVIE_ITEM = 1;
   private final Context fContext;
   private List<Result> fMovieList;
   private AdapterListener fClickListener;
@@ -29,15 +28,33 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
   @Override public int getItemCount() { return fMovieList == null ? 0 : fMovieList.size(); }
 
   @Override
-  public MovieListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+  public int getItemViewType(final int position) {
+    if (fMovieList == null) {
+      return EMPTY_ITEM;
+    }
+    return fMovieList.get(position) != null ? MOVIE_ITEM : EMPTY_ITEM;
+  }
+
+  @Override
+  public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    if (viewType == EMPTY_ITEM) {
+      View view = LayoutInflater.from(fContext).inflate(R.layout.movie_empty_item, parent, false);
+      return new EmptyListholder(view);
+    }
     View view = LayoutInflater.from(fContext).inflate(R.layout.movie_list_item, parent, false);
     return new MovieListHolder(view);
   }
 
   @Override
-  public void onBindViewHolder(MovieListHolder holder, int position) {
-    Result movie = fMovieList.get(position);
-    holder.bind(position, movie);
+  public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    final int viewType = getItemViewType(position);
+    if (viewType == EMPTY_ITEM) {
+      EmptyListholder mh = (EmptyListholder) holder;
+    } else if (viewType == MOVIE_ITEM) {
+      MovieListHolder mh = (MovieListHolder) holder;
+      Result movie = fMovieList.get(position);
+      mh.bind(position, movie);
+    }
   }
 
   public void setOnClickListener(AdapterListener aClickListener) {
@@ -74,6 +91,19 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
   interface AdapterListener {
     void onClick(Result aResult);
     void onClickShare(Result aResult);
+  }
+
+  class EmptyListholder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+    public EmptyListholder(final View itemView) {
+      super(itemView);
+
+    }
+
+    @Override
+    public void onClick(final View v) {
+
+    }
   }
 
   class MovieListHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
