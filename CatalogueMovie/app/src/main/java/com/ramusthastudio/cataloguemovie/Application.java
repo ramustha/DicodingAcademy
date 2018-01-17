@@ -29,7 +29,7 @@ public class Application extends android.app.Application {
   private void startJob() {
     Toast.makeText(this, "Dispatcher Created", Toast.LENGTH_SHORT).show();
     Bundle myExtrasBundle = new Bundle();
-    myExtrasBundle.putString(MovieService.EXTRA_JOB_SERVICE, SERVER_URL + "/discover/movie?api_key=" + SERVER_API + "&language=" + LANGUAGE + "&sort_by=popularity.desc");
+    myExtrasBundle.putString(MovieService.EXTRA_JOB_SERVICE, SERVER_URL + "/movie/popular?api_key=" + SERVER_API + "&language=" + LANGUAGE + "&sort_by=popularity.desc");
 
     Job myJob = fMovieService.newJobBuilder()
         // kelas service yang akan dipanggil
@@ -43,7 +43,7 @@ public class Application extends android.app.Application {
         // forever berarti akan berjalan meskipun sudah reboot
         .setLifetime(Lifetime.UNTIL_NEXT_BOOT)
         // waktu trigger 0 sampai 60 detik
-        .setTrigger(Trigger.executionWindow(0, 60))
+        .setTrigger(Trigger.executionWindow(0, 60 * 60))
         // overwrite job dengan tag sama
         .setReplaceCurrent(true)
         // set waktu kapan akan dijalankan lagi jika gagal

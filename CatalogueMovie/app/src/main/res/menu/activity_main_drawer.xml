@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <group android:checkableBehavior="none">
+    <item
+        android:id="@+id/now_playing"
+        android:icon="@drawable/ic_now_playing"
+        android:title="@string/menu_now_playing"/>
+    <item
+        android:id="@+id/upcoming"
+        android:icon="@drawable/ic_upcoming"
+        android:title="@string/menu_upcoming"/>
+    <item
+        android:id="@+id/popular"
+        android:icon="@drawable/ic_popular"
+        android:title="@string/menu_popular"/>
+    <item
+        android:id="@+id/top_rated"
+        android:icon="@drawable/ic_top_rated"
+        android:title="@string/menu_top_rated"/>
+  </group>
+
+  <item android:title="@string/menu_settings">
+    <menu>
+      <item
+          android:id="@+id/change_theme"
+          android:icon="@drawable/ic_change_theme"
+          android:title="@string/menu_change_theme"/>
+      <item
+          android:id="@+id/change_language"
+          android:icon="@drawable/ic_change_language"
+          android:title="@string/menu_change_language"/>
+    </menu>
+  </item>
+</menu>

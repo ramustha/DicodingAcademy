@@ -1,28 +1,15 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.ramusthastudio.cataloguemovie.MainFragment">
+    tools:context="com.ramusthastudio.cataloguemovie.AbstractMovieFragment">
 
-  <LinearLayout
+  <include
+      android:id="@+id/movieEmpty"
+      layout="@layout/movie_empty_item"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal">
-    <EditText
-        android:id="@+id/searchText"
-        android:hint="@string/search_movie_hint"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"/>
-    <Button
-        android:id="@+id/searchBtn"
-        android:text="@string/search_movie_btn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        style="@style/ButtonGeneral"/>
-  </LinearLayout>
+      android:layout_height="match_parent"/>
 
   <android.support.v4.widget.SwipeRefreshLayout
       android:id="@+id/swipeListView"
@@ -31,7 +18,19 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/movieList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
   </android.support.v4.widget.SwipeRefreshLayout>
 
-</LinearLayout>
+  <android.support.design.widget.FloatingActionButton
+      android:id="@+id/fab"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentBottom="true"
+      android:layout_margin="@dimen/fab_margin"
+      android:src="@drawable/ic_arrow_up"
+      android:visibility="gone"/>
+
+</RelativeLayout>

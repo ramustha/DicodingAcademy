@@ -1,30 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <ImageView
-      android:id="@+id/itemShare"
-      android:layout_width="150dp"
-      android:layout_height="150dp"
-      android:src="@drawable/ic_announcement"
-      android:contentDescription="@string/share_cont_desc"
-      app:layout_constraintStart_toStartOf="parent"
-      android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent"
-      android:layout_marginEnd="8dp" app:layout_constraintHorizontal_bias="0.5"
-      app:layout_constraintTop_toTopOf="parent"
-      android:layout_marginTop="8dp" app:layout_constraintBottom_toBottomOf="parent"
-      android:layout_marginBottom="8dp"/>
-  <TextView
-      android:text="@string/emptyorerror"
+  <LinearLayout
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:id="@+id/itemTitle"
-      app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
-      app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
-      app:layout_constraintHorizontal_bias="0.5"
-      app:layout_constraintTop_toBottomOf="@+id/itemShare" android:layout_marginTop="8dp"/>
+      android:orientation="vertical"
+      android:layout_centerVertical="true"
+      android:layout_centerHorizontal="true">
+    <ImageView
+        android:id="@+id/itemShare"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_announcement"
+        android:layout_gravity="center"
+        android:contentDescription="@string/share_cont_desc"/>
+    <TextView
+        android:text="@string/emptyorerror"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/itemTitle"/>
+  </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

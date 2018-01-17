@@ -1,0 +1,22 @@
+<resources>
+  <string name="app_name">Catalogue Movie</string>
+
+  <string name="blank_field_search">Harus diisi</string>
+  <string name="unknown_string">Tidak diketahui</string>
+  <string name="close_btn">Tutup</string>
+  <string name="release">Tayang</string>
+  <string name="title">Judul</string>
+  <string name="emptyorerror">Kosong atau Error</string>
+
+  <string name="share_cont_desc">share movie</string>
+
+  <string name="menu_settings">Pengaturan</string>
+  <string name="menu_now_playing">Sedang tayang</string>
+  <string name="menu_upcoming">Mendatang</string>
+  <string name="menu_top_rated">Rating tinggi</string>
+  <string name="menu_popular">Populer</string>
+  <string name="menu_change_theme">Ganti Theme</string>
+  <string name="menu_change_language">Ganti Bahasa</string>
+  <string name="menu_search_movie">Cari</string>
+  <string name="menu_search_movie_hint">Cari movies</string>
+</resources>

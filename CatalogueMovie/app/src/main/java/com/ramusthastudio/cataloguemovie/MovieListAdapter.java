@@ -15,8 +15,6 @@ import java.util.Locale;
 
 public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
   public static final SimpleDateFormat sDateFormat = new SimpleDateFormat("E, dd-MM-yyyy", Locale.getDefault());
-  private static final int EMPTY_ITEM = 0;
-  private static final int MOVIE_ITEM = 1;
   private final Context fContext;
   private List<Result> fMovieList;
   private AdapterListener fClickListener;
@@ -28,29 +26,14 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
   @Override public int getItemCount() { return fMovieList == null ? 0 : fMovieList.size(); }
 
   @Override
-  public int getItemViewType(final int position) {
-    if (fMovieList == null) {
-      return EMPTY_ITEM;
-    }
-    return fMovieList.get(position) != null ? MOVIE_ITEM : EMPTY_ITEM;
-  }
-
-  @Override
   public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    if (viewType == EMPTY_ITEM) {
-      View view = LayoutInflater.from(fContext).inflate(R.layout.movie_empty_item, parent, false);
-      return new EmptyListholder(view);
-    }
     View view = LayoutInflater.from(fContext).inflate(R.layout.movie_list_item, parent, false);
     return new MovieListHolder(view);
   }
 
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-    final int viewType = getItemViewType(position);
-    if (viewType == EMPTY_ITEM) {
-      EmptyListholder mh = (EmptyListholder) holder;
-    } else if (viewType == MOVIE_ITEM) {
+    if (holder instanceof MovieListHolder) {
       MovieListHolder mh = (MovieListHolder) holder;
       Result movie = fMovieList.get(position);
       mh.bind(position, movie);
@@ -91,19 +74,6 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
   interface AdapterListener {
     void onClick(Result aResult);
     void onClickShare(Result aResult);
-  }
-
-  class EmptyListholder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-    public EmptyListholder(final View itemView) {
-      super(itemView);
-
-    }
-
-    @Override
-    public void onClick(final View v) {
-
-    }
   }
 
   class MovieListHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -151,7 +121,6 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
       } else {
         itemDateView.setText(fContext.getString(R.string.unknown_string));
       }
-      // itemDateView.setText(aMovie.getReleaseDate());
       itemRatingView.setText(String.valueOf(aMovie.getVoteAverage()));
     }
   }

@@ -35,18 +35,6 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
   }
 
-  public int getLastVisibleItem(int[] lastVisibleItemPositions) {
-    int maxSize = 0;
-    for (int i = 0; i < lastVisibleItemPositions.length; i++) {
-      if (i == 0) {
-        maxSize = lastVisibleItemPositions[i];
-      } else if (lastVisibleItemPositions[i] > maxSize) {
-        maxSize = lastVisibleItemPositions[i];
-      }
-    }
-    return maxSize;
-  }
-
   // This happens many times a second during a scroll, so be wary of the code you place here.
   // We are given a few useful parameters to help us work out if we need to load some more data,
   // but first we check if we are waiting for the previous load to finish.
@@ -91,19 +79,39 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
       onLoadMore(currentPage, totalItemCount, view);
       loading = true;
     }
+
+    if (dy > 0) {
+      onScrollYGreaterThanZero();
+    } else if (dy < 0) {
+      onScrollYLessThanZero();
+    }
   }
 
   // Call this method whenever performing new searches
-  public void resetState() {
+  public final void resetState() {
     this.currentPage = this.startingPageIndex;
     this.previousTotalItemCount = 0;
     this.loading = true;
   }
 
-  public void setEnabled(boolean aEnabled) {
+  public final void setEnabled(boolean aEnabled) {
     enabled = aEnabled;
   }
 
   // Defines the process for actually loading more data based on page
   public abstract void onLoadMore(int page, int totalItemsCount, RecyclerView view);
+  public void onScrollYGreaterThanZero() {}
+  public void onScrollYLessThanZero() {}
+
+  private static int getLastVisibleItem(int[] lastVisibleItemPositions) {
+    int maxSize = 0;
+    for (int i = 0; i < lastVisibleItemPositions.length; i++) {
+      if (i == 0) {
+        maxSize = lastVisibleItemPositions[i];
+      } else if (lastVisibleItemPositions[i] > maxSize) {
+        maxSize = lastVisibleItemPositions[i];
+      }
+    }
+    return maxSize;
+  }
 }

@@ -20,8 +20,8 @@ import com.ramusthastudio.cataloguemovie.model.Moviedb;
 import com.ramusthastudio.cataloguemovie.model.Result;
 import java.util.Random;
 
+import static com.ramusthastudio.cataloguemovie.AbstractMovieFragment.ARG_PARAM;
 import static com.ramusthastudio.cataloguemovie.MainActivity.REQUEST_CODE;
-import static com.ramusthastudio.cataloguemovie.MainFragment.ARG_PARAM;
 import static com.ramusthastudio.cataloguemovie.MovieListAdapter.sDateFormat;
 
 public final class MovieService extends JobService implements Tasks.TaskListener<Moviedb> {
@@ -33,6 +33,8 @@ public final class MovieService extends JobService implements Tasks.TaskListener
     fTasks = new Tasks<>(this);
   }
 
+  @Override public void onStartTask() { }
+
   @Override
   public boolean onStartJob(JobParameters aJobParameters) {
     Log.d(MovieService.class.getSimpleName(), "onStartJob() Executed");
@@ -41,7 +43,7 @@ public final class MovieService extends JobService implements Tasks.TaskListener
   }
 
   @Override public boolean onStopJob(JobParameters job) {
-    Log.d(MovieService.class.getSimpleName(), "onStartJob() Executed");
+    Log.d(MovieService.class.getSimpleName(), "onStopJob() Executed");
     return true;
   }
 
@@ -54,7 +56,7 @@ public final class MovieService extends JobService implements Tasks.TaskListener
 
   @Override
   public void onFailure(int statusCode, Throwable aThrowable, JobParameters aJobParameters) {
-    Log.d(MainActivity.class.getSimpleName(), String.format("status %s, couse %s", statusCode, aThrowable));
+    Log.e(MainActivity.class.getSimpleName(), String.format("status %s, couse %s", statusCode, aThrowable));
     jobFinished(aJobParameters, false);
   }
 

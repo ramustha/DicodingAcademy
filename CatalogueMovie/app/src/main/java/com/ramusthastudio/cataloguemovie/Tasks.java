@@ -21,6 +21,7 @@ public final class Tasks<T> {
   }
 
   interface TaskListener<T> {
+    void onStartTask();
     void onSuccess(T aResponse, JobParameters aJobParameters);
     void onFailure(int statusCode, Throwable aThrowable, JobParameters aJobParameters);
     Class<T> toClass();
@@ -30,6 +31,12 @@ public final class Tasks<T> {
     Log.d(TAG, "Running");
 
     sHttpClient.get(aUrl, new BaseJsonHttpResponseHandler<T>() {
+
+      @Override public void onStart() {
+        if (fListener != null) {
+          fListener.onStartTask();
+        }
+      }
 
       @Override
       public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, T response) {
@@ -47,7 +54,9 @@ public final class Tasks<T> {
       @Override
       public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, T errorResponse) {
         Log.e(TAG, "onFailure ", throwable);
-        fListener.onFailure(statusCode, throwable, null);
+        if (fListener != null) {
+          fListener.onFailure(statusCode, throwable, null);
+        }
       }
 
       @Override
@@ -72,6 +81,12 @@ public final class Tasks<T> {
 
     sHttpClient.get(extra.getString(EXTRA_JOB_SERVICE), new BaseJsonHttpResponseHandler<T>() {
 
+      @Override public void onStart() {
+        if (fListener != null) {
+          fListener.onStartTask();
+        }
+      }
+
       @Override
       public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, T response) {
         Log.d(TAG, "Moviedb " + response);
@@ -88,7 +103,9 @@ public final class Tasks<T> {
       @Override
       public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, T errorResponse) {
         Log.e(TAG, "onFailure ", throwable);
-        fListener.onFailure(statusCode, throwable, aJobParameters);
+        if (fListener != null) {
+          fListener.onFailure(statusCode, throwable, aJobParameters);
+        }
       }
 
       @Override
