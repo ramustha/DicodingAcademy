@@ -92,8 +92,6 @@ public final class MovieService extends JobService implements Tasks.TaskListener
         .setSmallIcon(R.mipmap.ic_launcher_round)
         .setContent(remoteViews)
         .setContentIntent(intent)
-        .setColor(ContextCompat.getColor(context, android.R.color.white))
-        .setVibrate(new long[] {1000, 1000, 1000, 1000, 1000})
         .setSound(alarmSound);
 
     final Notification notification = builder.build();
