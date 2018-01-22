@@ -1,0 +1,8 @@
+<resources>
+  <string name="app_name">MyPreLoadData</string>
+  <string name="loading">loading</string>
+  <string name="nim">Nim</string>
+  <string name="nama">Nama</string>
+
+  <string name="app_first_run">app_first_run</string>
+</resources>
