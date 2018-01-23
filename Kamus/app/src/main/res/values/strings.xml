@@ -1,0 +1,13 @@
+<resources>
+  <string name="app_name">Kamus</string>
+  <string name="loading">Loading please wait</string>
+
+  <string name="app_first_run" translatable="false">app_first_run</string>
+  <string name="indonesia_english">Indonesia - English</string>
+  <string name="english_indonesia">English - Indonesia</string>
+
+  <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+  <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+  <string name="Search">Cari</string>
+  <string name="search_hint">Cari Kata</string>
+</resources>
