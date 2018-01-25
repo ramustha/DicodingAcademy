@@ -1,12 +1,12 @@
-package com.ramusthastudio.mynotesapp;
+package com.ramusthastudio.dicodingnotesapp;
 
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import static android.provider.MediaStore.Audio.Playlists.Members._ID;
-import static com.ramusthastudio.mynotesapp.DatabaseContract.getColumnInt;
-import static com.ramusthastudio.mynotesapp.DatabaseContract.getColumnString;
+import static com.ramusthastudio.dicodingnotesapp.DatabaseContract.getColumnInt;
+import static com.ramusthastudio.dicodingnotesapp.DatabaseContract.getColumnString;
 
 public class Note implements Parcelable {
   private int id;
@@ -65,7 +65,7 @@ public class Note implements Parcelable {
     dest.writeString(this.date);
   }
 
-  public static final Parcelable.Creator<Note> CREATOR = new Parcelable.Creator<Note>() {
+  public static final Creator<Note> CREATOR = new Creator<Note>() {
 
     @Override
     public Note createFromParcel(Parcel source) {

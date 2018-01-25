@@ -1,4 +1,4 @@
-package com.ramusthastudio.mynotesapp;
+package com.ramusthastudio.dicodingnotesapp;
 
 import android.database.Cursor;
 import android.net.Uri;
