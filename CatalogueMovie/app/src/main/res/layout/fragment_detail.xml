@@ -1,118 +1,187 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    tools:context=".DetailFragment">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.ramusthastudio.cataloguemovie.MovieListActivity">
 
-  <android.support.constraint.ConstraintLayout
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:tools="http://schemas.android.com/tools"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content">
-
-    <ImageView
-        android:id="@+id/detailImage"
-        android:layout_width="match_parent"
-        android:layout_height="200dp" app:srcCompat="@mipmap/ic_launcher"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="8dp" android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"/>
-
-    <TextView
-        tools:text="7.6"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:id="@+id/detailRating"
-        android:maxLines="1"
-        android:background="@drawable/circle_background"
-        android:textStyle="bold"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="@+id/detailImage"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintTop_toTopOf="@+id/detailImage" android:layout_marginTop="8dp"
-        android:textAlignment="center"/>
-
-  <TableLayout
-      android:id="@+id/tableDetail"
+  <android.support.design.widget.AppBarLayout
+      android:id="@+id/detailAppBar"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
-      app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
-      android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/detailImage">
+      android:fitsSystemWindows="true"
+      android:theme="@style/AppTheme.AppBarOverlay">
 
-    <TableRow
-        android:id="@+id/rowTitle"
+    <android.support.design.widget.CollapsingToolbarLayout
+        android:id="@+id/detailImageCollapsingToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:theme="@style/CustomToolbarTheme"
+        app:contentScrim="?attr/colorPrimary"
+        app:expandedTitleMargin="16dp"
+        app:expandedTitleTextAppearance="@style/collapsedAppBarText"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+      <ImageView
+          android:id="@+id/detailImage"
+          android:layout_width="match_parent"
+          android:layout_height="200dp"
+          app:srcCompat="@mipmap/ic_launcher"
+          app:layout_collapseMode="parallax"
+          android:contentDescription="@string/movie_image_cont_desc"/>
+
+      <android.support.v7.widget.Toolbar
+          android:id="@+id/toolbar"
+          android:layout_width="match_parent"
+          android:layout_height="?attr/actionBarSize"
+          app:contentInsetStartWithNavigation="0dp"
+          app:layout_collapseMode="pin"
+          android:theme="@style/CustomToolbarTheme"
+          app:popupTheme="@style/AppTheme.PopupOverlay"
+      />
+    </android.support.design.widget.CollapsingToolbarLayout>
+
+  </android.support.design.widget.AppBarLayout>
+
+  <ImageView
+      android:id="@+id/detailFav"
+      android:src="@android:drawable/star_big_off"
+      android:layout_width="40dp"
+      android:layout_height="40dp"
+      android:layout_marginRight="16dp"
+      android:layout_marginEnd="16dp"
+      android:background="@drawable/circle_background"
+      app:layout_anchor="@id/detailAppBar"
+      app:behavior_autoHide="true"
+      app:layout_anchorGravity="bottom|right|end"/>
+
+  <TextView
+      android:id="@+id/detailRating"
+      tools:text="7.6"
+      android:layout_width="30dp"
+      android:layout_height="30dp"
+      android:maxLines="1"
+      android:background="@drawable/circle_background"
+      android:textStyle="bold"
+      android:gravity="center"
+      android:layout_marginRight="64dp"
+      android:layout_marginEnd="64dp"
+      app:layout_anchor="@id/detailAppBar"
+      app:behavior_autoHide="true"
+      app:layout_anchorGravity="bottom|right|end"
+      android:textAlignment="center"/>
+
+  <android.support.v4.widget.NestedScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:clipToPadding="false"
+      android:layout_marginTop="16dp"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-      <TextView
-          android:text="@string/title"
-          android:layout_width="70dp"/>
+      <TableLayout
+          android:id="@+id/tableDetail"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          app:layout_constraintStart_toStartOf="parent"
+          android:layout_marginStart="8dp"
+          app:layout_constraintTop_toTopOf="parent"
+          android:layout_marginTop="8dp" app:layout_constraintEnd_toEndOf="parent"
+          android:layout_marginEnd="8dp">
+
+        <TableRow
+            android:id="@+id/rowTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+          <TextView
+              android:text="@string/title"
+              android:layout_width="70dp"/>
+
+          <TextView
+              tools:text="Title"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:id="@+id/detailTitle"
+              android:textStyle="bold"/>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/rowPubDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+          <TextView
+              android:text="@string/release"
+              android:layout_width="70dp"/>
+
+          <TextView
+              android:id="@+id/detailDate"
+              tools:text="Release date"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"/>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/rowPopularity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+          <TextView
+              android:text="@string/popularity"
+              android:layout_width="70dp"/>
+
+          <TextView
+              android:id="@+id/detailPopularity"
+              tools:text="Popularity"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"/>
+        </TableRow>
+
+      </TableLayout>
 
       <TextView
-          tools:text="Title"
+          android:text="@string/overview"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:id="@+id/overview" app:layout_constraintStart_toStartOf="parent"
+          android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent"
+          android:layout_marginEnd="8dp" android:layout_marginTop="16dp"
+          app:layout_constraintTop_toBottomOf="@+id/tableDetail" android:textSize="24sp"
+      />
+      <TextView
+          android:id="@+id/detailDesc"
+          tools:text="Description"
+          android:singleLine="false"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:id="@+id/detailTitle"
-          android:textStyle="bold"/>
-    </TableRow>
-
-    <TableRow
-        android:id="@+id/rowPubDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+          app:layout_constraintEnd_toEndOf="parent"
+          android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
+          android:layout_marginStart="8dp"
+          android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/overview"/>
 
       <TextView
-          android:text="@string/release"
-          android:layout_width="70dp"/>
-
-      <TextView
-          android:id="@+id/detailDate"
-          tools:text="Release date"
+          android:id="@+id/detailGenre"
+          tools:text="Genre"
+          android:singleLine="false"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"/>
-    </TableRow>
+          android:layout_height="wrap_content"
+          app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+          app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
+          android:textAlignment="center" android:textStyle="bold|italic" android:textSize="14sp"
+          android:layout_marginTop="16dp" app:layout_constraintTop_toBottomOf="@+id/detailDesc"
+          app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="8dp"/>
+      <android.support.constraint.Guideline android:layout_width="wrap_content"
+          android:layout_height="wrap_content" android:id="@+id/guideline"
+          app:layout_constraintGuide_begin="336dp" android:orientation="horizontal"/>
+    </android.support.constraint.ConstraintLayout>
 
-  </TableLayout>
+  </android.support.v4.widget.NestedScrollView>
 
-  <TextView
-      android:id="@+id/detailDesc"
-      tools:text="Description"
-      android:singleLine="false"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      app:layout_constraintEnd_toEndOf="parent"
-      android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
-      android:layout_marginStart="8dp"
-      android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/tableDetail"/>
-
-  <TextView
-      android:id="@+id/detailGenre"
-      tools:text="Genre"
-      android:singleLine="false"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
-      app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
-      android:textAlignment="center" android:textStyle="bold|italic" android:textSize="14sp"
-      android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/detailDesc"/>
-    <Button
-        android:id="@+id/closeBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/close_btn"
-        android:layout_marginTop="16dp"
-        style="@style/ButtonGeneral"
-        app:layout_constraintTop_toBottomOf="@+id/detailGenre"
-        app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"/>
-  </android.support.constraint.ConstraintLayout>
-
-</android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.CoordinatorLayout>

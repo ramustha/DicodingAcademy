@@ -22,7 +22,7 @@ import com.ramusthastudio.cataloguemovie.model.Result;
 
 import static com.ramusthastudio.cataloguemovie.AbstractMovieFragment.ARG_PARAM;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MovieListActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
   public static final int REQUEST_CODE = 111;
   private DrawerLayout fDrawerLayout;
   private NavigationView fNavigationView;
@@ -41,14 +41,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
+    setContentView(R.layout.activity_movie_list);
     fToolbar = findViewById(R.id.toolbar);
     fDrawerLayout = findViewById(R.id.drawer_layout);
     fNavigationView = findViewById(R.id.nav_view);
 
     setSupportActionBar(fToolbar);
     if (getSupportActionBar() != null) {
-      getSupportActionBar().setTitle("Now playing");
+      getSupportActionBar().setTitle(getString(R.string.menu_now_playing));
     }
 
     fNavigationView.setItemIconTintList(null);
@@ -67,24 +67,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     int id = item.getItemId();
     switch (id) {
       case R.id.now_playing:
-        fToolbar.setTitle("Now playing");
+        fToolbar.setTitle(getString(R.string.menu_now_playing));
         replaceFragment(NowPlayingMovieFragment.newInstance(), NowPlayingMovieFragment.class.getSimpleName());
         break;
       case R.id.upcoming:
-        fToolbar.setTitle("Upcoming");
+        fToolbar.setTitle(getString(R.string.menu_upcoming));
         replaceFragment(UpcomingMovieFragment.newInstance(), UpcomingMovieFragment.class.getSimpleName());
         break;
       case R.id.popular:
-        fToolbar.setTitle("Popular");
+        fToolbar.setTitle(getString(R.string.menu_popular));
         replaceFragment(PopularMovieFragment.newInstance(), PopularMovieFragment.class.getSimpleName());
         break;
       case R.id.top_rated:
-        fToolbar.setTitle("Top rated");
+        fToolbar.setTitle(getString(R.string.menu_top_rated));
         replaceFragment(TopRatedMovieFragment.newInstance(), TopRatedMovieFragment.class.getSimpleName());
+        break;
+      case R.id.favorite:
+        fToolbar.setTitle(getString(R.string.menu_favorite));
+        replaceFragment(FavoriteFragment.newInstance(), FavoriteFragment.class.getSimpleName());
         break;
       case R.id.change_theme:
         changeThemePref();
-
         break;
       case R.id.change_language:
         startActivity(new Intent(Settings.ACTION_LOCALE_SETTINGS));
@@ -117,27 +120,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     if (fDrawerLayout.isDrawerOpen(Gravity.START)) {
       fDrawerLayout.closeDrawers();
     } else {
-      finish();
+
+      if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+        finish();
+      } else {
+        super.onBackPressed();
+      }
     }
   }
 
   void removeFragment(Fragment aFragment) {
     FragmentManager fragmentManager = getSupportFragmentManager();
     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-    fragmentTransaction.remove(aFragment);
-    fragmentTransaction.commit();
+    fragmentTransaction.remove(aFragment)
+        .commit();
   }
 
   void replaceFragment(Fragment aFragment, String aTag) {
     replaceFragment(aFragment, aTag, null);
   }
 
-  void replaceFragment(Fragment aFragment, String aTag, String aToBackStack) {
+  void replaceFragment(Fragment aFragment, String aTag, String aName) {
     FragmentManager mFragmentManager = getSupportFragmentManager();
     FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
-    mFragmentTransaction.replace(R.id.fragment_container, aFragment, aTag);
-    mFragmentTransaction.addToBackStack(aToBackStack);
-    mFragmentTransaction.commit();
+    mFragmentTransaction
+        .addToBackStack(aName)
+        .replace(R.id.fragment_container, aFragment, aTag)
+        .commit();
   }
 
   void changeThemePref() {
@@ -147,10 +156,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     if (!useThemeLight) {
       edit.putBoolean("useThemeLight", true);
-      Log.d(MainActivity.class.getSimpleName(), "Light");
+      Log.d(MovieListActivity.class.getSimpleName(), "Light");
     } else {
       edit.putBoolean("useThemeLight", false);
-      Log.d(MainActivity.class.getSimpleName(), "Dark");
+      Log.d(MovieListActivity.class.getSimpleName(), "Dark");
     }
     edit.commit();
     recreate();

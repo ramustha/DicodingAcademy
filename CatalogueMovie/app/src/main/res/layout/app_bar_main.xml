@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ramusthastudio.cataloguemovie.MainActivity">
+    tools:context="com.ramusthastudio.cataloguemovie.MovieListActivity">
 
   <android.support.design.widget.AppBarLayout
       android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       app:layout_behavior="@string/appbar_scrolling_view_behavior"
-      tools:context="com.ramusthastudio.cataloguemovie.MainActivity"
+      tools:context="com.ramusthastudio.cataloguemovie.MovieListActivity"
       tools:showIn="@layout/app_bar_main"/>
 
 </android.support.design.widget.CoordinatorLayout>

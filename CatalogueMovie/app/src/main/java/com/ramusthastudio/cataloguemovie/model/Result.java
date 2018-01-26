@@ -35,6 +35,27 @@ public class Result implements Serializable {
   @SerializedName("release_date")
   private Date releaseDate;
 
+  public Result(
+      final int aId,
+      final String aTitle,
+      final String aPoster,
+      final String aBackdrop,
+      final Date aReleaseDate,
+      final List<Integer> aGenreIds,
+      final double aRating,
+      final String aOverview,
+      final float aPopularity) {
+    id = aId;
+    title = aTitle;
+    posterPath = aPoster;
+    backdropPath = aBackdrop;
+    releaseDate = aReleaseDate;
+    genreIds = aGenreIds;
+    voteAverage = aRating;
+    overview = aOverview;
+    popularity = aPopularity;
+  }
+
   public int getVoteCount() { return voteCount; }
   public int getId() { return id; }
   public boolean isVideo() { return video; }

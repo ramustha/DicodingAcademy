@@ -17,6 +17,10 @@
         android:id="@+id/top_rated"
         android:icon="@drawable/ic_top_rated"
         android:title="@string/menu_top_rated"/>
+    <item
+        android:id="@+id/favorite"
+        android:icon="@android:drawable/star_big_on"
+        android:title="@string/menu_favorite"/>
   </group>
 
   <item android:title="@string/menu_settings">

@@ -5,8 +5,12 @@
   <string name="unknown_string">Tidak diketahui</string>
   <string name="close_btn">Tutup</string>
   <string name="release">Tayang</string>
+  <string name="popularity">Popularitas</string>
   <string name="title">Judul</string>
+  <string name="overview">Ikhtisar</string>
   <string name="emptyorerror">Kosong atau Error</string>
+  <string name="save_fav_success">Sukses menyimpan ke favorit</string>
+  <string name="already_saved">Sudah jadi favorit</string>
 
   <string name="share_cont_desc">share movie</string>
 
@@ -14,6 +18,7 @@
   <string name="menu_now_playing">Sedang tayang</string>
   <string name="menu_upcoming">Mendatang</string>
   <string name="menu_top_rated">Rating tinggi</string>
+  <string name="menu_favorite">Favorit</string>
   <string name="menu_popular">Populer</string>
   <string name="menu_change_theme">Ganti Theme</string>
   <string name="menu_change_language">Ganti Bahasa</string>

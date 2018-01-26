@@ -1,4 +1,3 @@
-
 <resources>
   <string name="app_name">Catalogue Movie</string>
 
@@ -6,8 +5,12 @@
   <string name="unknown_string">Unknown</string>
   <string name="close_btn">Close</string>
   <string name="release">Release</string>
+  <string name="popularity">Popularity</string>
   <string name="title">Title</string>
+  <string name="overview">Overview</string>
   <string name="emptyorerror">Empty or Error</string>
+  <string name="save_fav_success">Success saved to favorite</string>
+  <string name="already_saved">Already favorited</string>
 
   <string name="share_cont_desc">share movie</string>
   <string name="movie_image_cont_desc" translatable="false">movie image</string>
@@ -16,6 +19,7 @@
   <string name="menu_now_playing">Now Playing</string>
   <string name="menu_upcoming">Upcoming</string>
   <string name="menu_top_rated">Top Rated</string>
+  <string name="menu_favorite">Favorite</string>
   <string name="menu_popular">Popular</string>
   <string name="menu_change_theme">Change Theme</string>
   <string name="menu_change_language">Change Language</string>
@@ -24,4 +28,5 @@
 
   <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
   <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+
 </resources>

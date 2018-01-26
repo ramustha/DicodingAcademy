@@ -4,6 +4,13 @@
 
   <uses-permission android:name="android.permission.INTERNET"/>
 
+  <permission
+      android:name="com.ramusthastudio.cataloguemovie.READ_DATABASE"
+      android:protectionLevel="normal"/>
+  <permission
+      android:name="com.ramusthastudio.cataloguemovie.WRITE_DATABASE"
+      android:protectionLevel="normal"/>
+
   <application
       android:name=".Application"
       android:allowBackup="true"
@@ -13,7 +20,7 @@
       android:supportsRtl="true"
       android:theme="@style/AppThemeDark">
     <activity
-        android:name=".MainActivity"
+        android:name=".MovieListActivity"
         android:configChanges="orientation|screenSize|keyboardHidden"
         android:windowSoftInputMode="stateHidden">
       <intent-filter>
@@ -23,9 +30,18 @@
       </intent-filter>
     </activity>
 
+    <activity android:name=".DetailActivity"/>
+
+    <provider
+        android:name=".repo.DatabaseProvider"
+        android:authorities="com.ramusthastudio.cataloguemovie"
+        android:exported="true"
+        android:readPermission="com.ramusthastudio.cataloguemovie.READ_DATABASE"
+        android:writePermission="com.ramusthastudio.cataloguemovie.WRITE_DATABASE"/>
+
     <service
-        android:exported="false"
-        android:name=".MovieService">
+        android:name=".MovieService"
+        android:exported="false">
       <intent-filter>
         <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
       </intent-filter>

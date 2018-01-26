@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
 import com.bumptech.glide.Glide;
@@ -21,7 +20,7 @@ import com.ramusthastudio.cataloguemovie.model.Result;
 import java.util.Random;
 
 import static com.ramusthastudio.cataloguemovie.AbstractMovieFragment.ARG_PARAM;
-import static com.ramusthastudio.cataloguemovie.MainActivity.REQUEST_CODE;
+import static com.ramusthastudio.cataloguemovie.MovieListActivity.REQUEST_CODE;
 import static com.ramusthastudio.cataloguemovie.MovieListAdapter.sDateFormat;
 
 public final class MovieService extends JobService implements Tasks.TaskListener<Moviedb> {
@@ -49,14 +48,14 @@ public final class MovieService extends JobService implements Tasks.TaskListener
 
   @Override
   public void onSuccess(Moviedb aResponse, JobParameters aJobParameters) {
-    Log.d(MainActivity.class.getSimpleName(), aResponse.toString());
+    Log.d(MovieListActivity.class.getSimpleName(), aResponse.toString());
     showNotification(getApplicationContext(), aResponse, 100);
     jobFinished(aJobParameters, false);
   }
 
   @Override
   public void onFailure(int statusCode, Throwable aThrowable, JobParameters aJobParameters) {
-    Log.e(MainActivity.class.getSimpleName(), String.format("status %s, couse %s", statusCode, aThrowable));
+    Log.e(MovieListActivity.class.getSimpleName(), String.format("status %s, couse %s", statusCode, aThrowable));
     jobFinished(aJobParameters, false);
   }
 
@@ -68,7 +67,7 @@ public final class MovieService extends JobService implements Tasks.TaskListener
     NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-    Intent notificationIntent = new Intent(context, MainActivity.class);
+    Intent notificationIntent = new Intent(context, MovieListActivity.class);
     notificationIntent.putExtra(ARG_PARAM, movie);
     notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 

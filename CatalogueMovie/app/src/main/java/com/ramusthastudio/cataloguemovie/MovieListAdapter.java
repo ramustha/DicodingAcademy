@@ -109,10 +109,14 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     private void bind(final int aPosition, Result aMovie) {
-      Glide
-          .with(fContext)
-          .load(BuildConfig.IMAGE_URL + "/w342" + aMovie.getPosterPath())
-          .into(itemImageView);
+      if (aMovie.getPosterPath() != null) {
+        if (aMovie.getPosterPath() != null) {
+          Glide
+              .with(fContext)
+              .load(BuildConfig.IMAGE_URL + "/w342" + aMovie.getPosterPath())
+              .into(itemImageView);
+        }
+      }
 
       itemTitleView.setText(aMovie.getTitle());
 
