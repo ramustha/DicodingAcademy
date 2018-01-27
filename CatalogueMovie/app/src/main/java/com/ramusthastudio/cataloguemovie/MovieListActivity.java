@@ -34,7 +34,7 @@ public class MovieListActivity extends AppCompatActivity implements NavigationVi
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     boolean useThemeLight = sp.getBoolean("useThemeLight", false);
 
-    if (!useThemeLight) {
+    if (useThemeLight) {
       getTheme().applyStyle(R.style.AppThemeLight, true);
     } else {
       getTheme().applyStyle(R.style.AppThemeDark, true);
@@ -112,7 +112,6 @@ public class MovieListActivity extends AppCompatActivity implements NavigationVi
   protected void onPause() {
     super.onPause();
     fDrawerLayout.removeDrawerListener(fDrawerToggle);
-    removeFragment(NowPlayingMovieFragment.newInstance());
   }
 
   @Override
@@ -120,20 +119,8 @@ public class MovieListActivity extends AppCompatActivity implements NavigationVi
     if (fDrawerLayout.isDrawerOpen(Gravity.START)) {
       fDrawerLayout.closeDrawers();
     } else {
-
-      if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
-        finish();
-      } else {
-        super.onBackPressed();
-      }
+      finish();
     }
-  }
-
-  void removeFragment(Fragment aFragment) {
-    FragmentManager fragmentManager = getSupportFragmentManager();
-    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-    fragmentTransaction.remove(aFragment)
-        .commit();
   }
 
   void replaceFragment(Fragment aFragment, String aTag) {

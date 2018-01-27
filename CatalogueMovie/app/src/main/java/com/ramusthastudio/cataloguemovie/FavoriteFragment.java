@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -28,10 +29,10 @@ import static com.ramusthastudio.cataloguemovie.MovieListAdapter.sDateFormat;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.CONTENT_URI;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.BACKDROP;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.GENRE;
-import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.POSTER;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.MOVIE_ID;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.OVERVIEW;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.POPULARITY;
+import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.POSTER;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.RATING;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.RELEASE_DATE;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.TITLE;
@@ -52,6 +53,7 @@ public class FavoriteFragment extends Fragment implements LoaderManager.LoaderCa
   @Override
   public void onAttach(final Context context) {
     super.onAttach(context);
+
     fMovieListAdapter = new MovieListAdapter(context);
   }
 
@@ -74,7 +76,6 @@ public class FavoriteFragment extends Fragment implements LoaderManager.LoaderCa
       @Override
       public void onRefresh() {
         fToTopFab.hide();
-        fMovieListAdapter.clear();
         initLoader();
       }
     });
@@ -113,8 +114,13 @@ public class FavoriteFragment extends Fragment implements LoaderManager.LoaderCa
       }
     });
 
-    initLoader();
     return view;
+  }
+
+  @Override
+  public void onViewCreated(@NonNull final View view, @Nullable final Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    initLoader();
   }
 
   @Override
@@ -142,6 +148,16 @@ public class FavoriteFragment extends Fragment implements LoaderManager.LoaderCa
     fMovieListAdapter.setMovieList(new ArrayList<Result>());
     fSwipeRefreshView.setRefreshing(false);
     onEmptyMovie();
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+
+    if (getActivity() != null) {
+      getActivity()
+          .getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
+    }
   }
 
   private void initLoader() {

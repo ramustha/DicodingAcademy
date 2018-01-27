@@ -42,7 +42,7 @@ public class Application extends android.app.Application {
         // until_next_boot berarti hanya sampai next boot
         // forever berarti akan berjalan meskipun sudah reboot
         .setLifetime(Lifetime.UNTIL_NEXT_BOOT)
-        // waktu trigger 0 sampai 60 detik
+        // waktu trigger 0 sampai 60 detik * 60
         .setTrigger(Trigger.executionWindow(0, 60 * 60))
         // overwrite job dengan tag sama
         .setReplaceCurrent(true)

@@ -20,7 +20,7 @@ public class DetailActivity extends AppCompatActivity {
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     boolean useThemeLight = sp.getBoolean("useThemeLight", false);
 
-    if (!useThemeLight) {
+    if (useThemeLight) {
       getTheme().applyStyle(R.style.AppThemeLight, true);
     } else {
       getTheme().applyStyle(R.style.AppThemeDark, true);
