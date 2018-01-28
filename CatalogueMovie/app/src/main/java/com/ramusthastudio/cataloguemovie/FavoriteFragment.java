@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -24,12 +23,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static android.provider.BaseColumns._ID;
 import static com.ramusthastudio.cataloguemovie.DetailFragment.ARG_PARAM;
 import static com.ramusthastudio.cataloguemovie.MovieListAdapter.sDateFormat;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.CONTENT_URI;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.BACKDROP;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.GENRE;
-import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.MOVIE_ID;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.OVERVIEW;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.POPULARITY;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.POSTER;
@@ -38,7 +37,7 @@ import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColum
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.TITLE;
 
 public class FavoriteFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-  private static final int LOADER_ID = 99;
+  private static final int LOADER_ID = 98;
   private SwipeRefreshLayout fSwipeRefreshView;
   private RecyclerView fMovieListView;
   private MovieListAdapter fMovieListAdapter;
@@ -59,7 +58,7 @@ public class FavoriteFragment extends Fragment implements LoaderManager.LoaderCa
 
   @Override
   public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_main, container, false);
+    View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
     fGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
 
     fMovieEmpty = view.findViewById(R.id.movieEmpty);
@@ -72,11 +71,13 @@ public class FavoriteFragment extends Fragment implements LoaderManager.LoaderCa
     fMovieListView.setLayoutManager(fGridLayoutManager);
     fMovieListView.setAdapter(fMovieListAdapter);
 
+    initLoader();
+
     fSwipeRefreshView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
       @Override
       public void onRefresh() {
         fToTopFab.hide();
-        initLoader();
+        fSwipeRefreshView.setEnabled(false);
       }
     });
 
@@ -118,12 +119,6 @@ public class FavoriteFragment extends Fragment implements LoaderManager.LoaderCa
   }
 
   @Override
-  public void onViewCreated(@NonNull final View view, @Nullable final Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
-    initLoader();
-  }
-
-  @Override
   public Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
     if (getContext() == null) {
       return null;
@@ -133,19 +128,21 @@ public class FavoriteFragment extends Fragment implements LoaderManager.LoaderCa
 
   @Override
   public void onLoadFinished(final Loader<Cursor> loader, final Cursor data) {
+    fMovieListAdapter.clear();
     fMovieListAdapter.setMovieList(toResult(data));
     fSwipeRefreshView.setRefreshing(false);
 
-    if (data == null) {
+    if (fMovieListAdapter.getItemCount() == 0) {
       onEmptyMovie();
     } else {
       onShowMovie();
     }
+    data.close();
   }
 
   @Override
   public void onLoaderReset(final Loader<Cursor> loader) {
-    fMovieListAdapter.setMovieList(new ArrayList<Result>());
+    fMovieListAdapter.clear();
     fSwipeRefreshView.setRefreshing(false);
     onEmptyMovie();
   }
@@ -153,17 +150,20 @@ public class FavoriteFragment extends Fragment implements LoaderManager.LoaderCa
   @Override
   public void onResume() {
     super.onResume();
-
-    if (getActivity() != null) {
-      getActivity()
-          .getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
-    }
+    resetLoader();
   }
 
   private void initLoader() {
     if (getActivity() != null) {
       getActivity()
           .getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+    }
+  }
+
+  private void resetLoader() {
+    if (getActivity() != null) {
+      getActivity()
+          .getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
     }
   }
 
@@ -182,7 +182,7 @@ public class FavoriteFragment extends Fragment implements LoaderManager.LoaderCa
   public List<Result> toResult(Cursor aCursor) {
     List<Result> resultList = new ArrayList<>();
     while (aCursor.moveToNext()) {
-      final int dbId = DatabaseContract.getColumnInt(aCursor, MOVIE_ID);
+      final int dbId = DatabaseContract.getColumnInt(aCursor, _ID);
       final String title = DatabaseContract.getColumnString(aCursor, TITLE);
       final String poster = DatabaseContract.getColumnString(aCursor, POSTER);
       final String backdrop = DatabaseContract.getColumnString(aCursor, BACKDROP);
@@ -210,8 +210,6 @@ public class FavoriteFragment extends Fragment implements LoaderManager.LoaderCa
           popularity
       ));
     }
-    aCursor.close();
-
     return resultList;
   }
 

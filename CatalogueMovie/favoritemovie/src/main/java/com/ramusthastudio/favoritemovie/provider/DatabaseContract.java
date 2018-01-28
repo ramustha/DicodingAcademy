@@ -1,4 +1,4 @@
-package com.ramusthastudio.cataloguemovie.repo;
+package com.ramusthastudio.favoritemovie.provider;
 
 import android.database.Cursor;
 import android.net.Uri;

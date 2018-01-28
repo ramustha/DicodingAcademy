@@ -68,7 +68,7 @@ public abstract class AbstractMovieFragment extends Fragment implements Tasks.Ta
 
   @Override
   public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_main, container, false);
+    View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
     fGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
 
     fMovieEmpty = view.findViewById(R.id.movieEmpty);
@@ -187,7 +187,7 @@ public abstract class AbstractMovieFragment extends Fragment implements Tasks.Ta
   @Override
   public void onFailure(int statusCode, Throwable aThrowable, JobParameters aJobParameters) {
     Log.d(AbstractMovieFragment.class.getSimpleName(), String.format("status %s, couse %s", statusCode, aThrowable));
-    fMovieListAdapter.setMovieList(new ArrayList<Result>());
+    fMovieListAdapter.setMovieList(null);
     fSwipeRefreshView.setRefreshing(false);
     onEmptyMovie();
   }

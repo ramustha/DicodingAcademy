@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 import static android.provider.BaseColumns._ID;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.AUTHORITY;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.CONTENT_URI;
-import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.MOVIE_ID;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.RELEASE_DATE;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.TABLE_NAME;
 
@@ -58,7 +57,7 @@ public class DatabaseProvider extends ContentProvider {
       case MOVIE_PATH_ID:
         cursor = database.query(TABLE_NAME
             , null
-            , MOVIE_ID + " = ?"
+            , _ID + " = ?"
             , new String[] {uri.getLastPathSegment()}
             , null
             , null
@@ -110,7 +109,7 @@ public class DatabaseProvider extends ContentProvider {
     int updated;
     switch (sUriMatcher.match(uri)) {
       case MOVIE_PATH_ID:
-        updated = database.update(TABLE_NAME, values, MOVIE_ID + " = ?", new String[] {uri.getLastPathSegment()});
+        updated = database.update(TABLE_NAME, values, _ID + " = ?", new String[] {uri.getLastPathSegment()});
         break;
       default:
         updated = 0;
@@ -133,7 +132,7 @@ public class DatabaseProvider extends ContentProvider {
     int deleted;
     switch (sUriMatcher.match(uri)) {
       case MOVIE_PATH_ID:
-        deleted = database.delete(TABLE_NAME, MOVIE_ID + " = ?", new String[] {uri.getLastPathSegment()});
+        deleted = database.delete(TABLE_NAME, _ID + " = ?", new String[] {uri.getLastPathSegment()});
         break;
       default:
         deleted = 0;

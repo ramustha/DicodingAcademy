@@ -1,0 +1,13 @@
+<resources>
+  <string name="app_name">FavoriteMovie</string>
+  <string name="unknown_string">Unknown</string>
+  <string name="close_btn">Close</string>
+  <string name="release">Release</string>
+  <string name="popularity">Popularity</string>
+  <string name="title">Title</string>
+  <string name="overview">Overview</string>
+  <string name="emptyorerror">Empty or Error</string>
+
+  <string name="share_cont_desc">share movie</string>
+  <string name="movie_image_cont_desc" translatable="false">movie image</string>
+</resources>

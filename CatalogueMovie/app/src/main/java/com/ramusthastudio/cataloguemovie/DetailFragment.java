@@ -24,10 +24,10 @@ import com.ramusthastudio.cataloguemovie.repo.DatabaseContract;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import static android.provider.BaseColumns._ID;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.CONTENT_URI;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.BACKDROP;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.GENRE;
-import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.MOVIE_ID;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.OVERVIEW;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.POPULARITY;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.POSTER;
@@ -129,7 +129,7 @@ public class DetailFragment extends Fragment {
 
         if (cursor != null) {
           if (cursor.moveToFirst()) {
-            final int dbId = DatabaseContract.getColumnInt(cursor, MOVIE_ID);
+            final int dbId = DatabaseContract.getColumnInt(cursor, _ID);
             if (dbId == fResult.getId()) {
               fIsFavorited = true;
               fFavoriteView.setImageResource(android.R.drawable.star_big_on);
@@ -166,7 +166,7 @@ public class DetailFragment extends Fragment {
 
         if (fResult != null) {
           ContentValues values = new ContentValues();
-          values.put(MOVIE_ID, fResult.getId());
+          values.put(_ID, fResult.getId());
           values.put(TITLE, fResult.getTitle());
           values.put(POSTER, fResult.getPosterPath());
           values.put(BACKDROP, fResult.getBackdropPath());

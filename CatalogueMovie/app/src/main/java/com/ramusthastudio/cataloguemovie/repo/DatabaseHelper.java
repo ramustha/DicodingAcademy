@@ -16,8 +16,7 @@ final class DatabaseHelper extends SQLiteOpenHelper {
   @Override
   public void onCreate(SQLiteDatabase db) {
     db.execSQL(String.format("CREATE TABLE %s"
-            + " (%s INTEGER PRIMARY KEY AUTOINCREMENT," +
-            " %s INT," +
+            + " (%s INT PRIMARY KEY," +
             " %s TEXT NOT NULL," +
             " %s TEXT NOT NULL," +
             " %s TEXT NOT NULL," +
@@ -28,7 +27,6 @@ final class DatabaseHelper extends SQLiteOpenHelper {
             " %s FLOAT)",
         DatabaseContract.TABLE_NAME,
         DatabaseContract.MovieColumns._ID,
-        DatabaseContract.MovieColumns.MOVIE_ID,
         DatabaseContract.MovieColumns.TITLE,
         DatabaseContract.MovieColumns.POSTER,
         DatabaseContract.MovieColumns.BACKDROP,
