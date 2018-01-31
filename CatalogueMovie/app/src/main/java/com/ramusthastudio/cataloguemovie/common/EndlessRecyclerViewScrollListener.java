@@ -21,18 +21,21 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
 
   RecyclerView.LayoutManager mLayoutManager;
 
-  public EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager) {
+  public EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager, int aCurrentPage) {
     this.mLayoutManager = layoutManager;
+    currentPage = aCurrentPage;
   }
 
-  public EndlessRecyclerViewScrollListener(GridLayoutManager layoutManager) {
+  public EndlessRecyclerViewScrollListener(GridLayoutManager layoutManager, int aCurrentPage) {
     this.mLayoutManager = layoutManager;
     visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
+    currentPage = aCurrentPage;
   }
 
-  public EndlessRecyclerViewScrollListener(StaggeredGridLayoutManager layoutManager) {
+  public EndlessRecyclerViewScrollListener(StaggeredGridLayoutManager layoutManager, int aCurrentPage) {
     this.mLayoutManager = layoutManager;
     visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
+    currentPage = aCurrentPage;
   }
 
   // This happens many times a second during a scroll, so be wary of the code you place here.
@@ -97,6 +100,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
   public final void setEnabled(boolean aEnabled) {
     enabled = aEnabled;
   }
+  public int getCurrentPage() { return currentPage;}
 
   // Defines the process for actually loading more data based on page
   public abstract void onLoadMore(int page, int totalItemsCount, RecyclerView view);

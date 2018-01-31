@@ -1,4 +1,4 @@
-package com.ramusthastudio.cataloguemovie;
+package com.ramusthastudio.cataloguemovie.service;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
+import com.ramusthastudio.cataloguemovie.BuildConfig;
+import com.ramusthastudio.cataloguemovie.R;
 import com.ramusthastudio.cataloguemovie.model.Result;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -23,6 +25,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     fContext = aContext;
   }
 
+  public List<Result> getMovieList() { return fMovieList; }
   @Override public int getItemCount() { return fMovieList == null ? 0 : fMovieList.size(); }
 
   @Override

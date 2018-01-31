@@ -1,4 +1,4 @@
-package com.ramusthastudio.cataloguemovie;
+package com.ramusthastudio.cataloguemovie.service;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -7,8 +7,6 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.ramusthastudio.cataloguemovie.common.CustomGson;
 import cz.msebera.android.httpclient.Header;
-
-import static com.ramusthastudio.cataloguemovie.MovieService.EXTRA_JOB_SERVICE;
 
 public final class Tasks<T> {
   private static final String TAG = Tasks.class.getSimpleName();
@@ -29,12 +27,12 @@ public final class Tasks<T> {
     Log.d(TAG, "Running");
 
     Bundle extra = aJobParameters.getExtras();
-    if (extra == null || extra.getString(EXTRA_JOB_SERVICE) == null) {
+    if (extra == null || extra.getString(UpcomingReminderService.EXTRA_JOB_SERVICE) == null) {
       fListener.onFailure(500, new NullPointerException("Extra cant be null"), aJobParameters);
       return;
     }
 
-    sHttpClient.get(extra.getString(EXTRA_JOB_SERVICE), new HttpHandler(aJobParameters));
+    sHttpClient.get(extra.getString(UpcomingReminderService.EXTRA_JOB_SERVICE), new HttpHandler(aJobParameters));
   }
 
   public interface TaskListener<T> {

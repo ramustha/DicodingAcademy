@@ -20,17 +20,14 @@
       android:supportsRtl="true"
       android:theme="@style/AppThemeDark">
     <activity
-        android:name=".MovieListActivity"
-        android:configChanges="orientation|screenSize|keyboardHidden"
-        android:windowSoftInputMode="stateHidden">
+        android:name=".MoviesActivity"
+        android:launchMode="singleTop">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
 
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity>
-
-    <activity android:name=".DetailActivity"/>
 
     <provider
         android:name=".repo.DatabaseProvider"
@@ -39,8 +36,17 @@
         android:readPermission="com.ramusthastudio.cataloguemovie.READ_DATABASE"
         android:writePermission="com.ramusthastudio.cataloguemovie.WRITE_DATABASE"/>
 
+    <receiver android:name=".widget.FavoriteWidget"/>
+
     <service
-        android:name=".MovieService"
+        android:name=".service.UpcomingReminderService"
+        android:exported="false">
+      <intent-filter>
+        <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+      </intent-filter>
+    </service>
+    <service
+        android:name=".service.DailyReminderService"
         android:exported="false">
       <intent-filter>
         <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>

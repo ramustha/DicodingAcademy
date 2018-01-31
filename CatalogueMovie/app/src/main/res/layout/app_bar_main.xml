@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ramusthastudio.cataloguemovie.MovieListActivity">
+    tools:context="com.ramusthastudio.cataloguemovie.MoviesActivity">
 
   <android.support.design.widget.AppBarLayout
       android:layout_height="wrap_content"
@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
+        app:title="@string/menu_now_playing"
         app:contentInsetStartWithNavigation="0dp"
         app:layout_scrollFlags="scroll|enterAlways"
         android:theme="@style/CustomToolbarTheme"
@@ -31,7 +32,7 @@
       app:layout_behavior="@string/appbar_scrolling_view_behavior"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      tools:context=".MovieListActivity">
+      tools:context=".MoviesActivity">
 
     <include
         android:id="@+id/movieEmpty"

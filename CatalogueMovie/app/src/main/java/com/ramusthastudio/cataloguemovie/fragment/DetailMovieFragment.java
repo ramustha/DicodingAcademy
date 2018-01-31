@@ -7,13 +7,12 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +22,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.ramusthastudio.cataloguemovie.BuildConfig;
 import com.ramusthastudio.cataloguemovie.Genre;
+import com.ramusthastudio.cataloguemovie.MoviesActivity;
 import com.ramusthastudio.cataloguemovie.R;
 import com.ramusthastudio.cataloguemovie.model.Result;
 import com.ramusthastudio.cataloguemovie.repo.DatabaseContract;
@@ -40,9 +40,10 @@ import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColum
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.RELEASE_DATE;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.TITLE;
 
-public class DetailFragment extends Fragment {
+public class DetailMovieFragment extends Fragment {
   protected static final String ARG_PARAM = "result";
   private static final SimpleDateFormat sDateFormat = new SimpleDateFormat("E, dd-MM-yyyy", Locale.getDefault());
+  private Toolbar fToolbar;
   private ImageView fItemImageView;
   private TextView fItemTitleView;
   private TextView fItemDateView;
@@ -56,8 +57,9 @@ public class DetailFragment extends Fragment {
   private boolean fIsFavorited;
   private AppBarLayout fAppBarView;
   private CollapsingToolbarLayout fCollapsingToolbarView;
+  private boolean fIsFromOutsideNotif;
 
-  public DetailFragment() {
+  public DetailMovieFragment() {
     // Required empty public constructor
   }
 
@@ -73,30 +75,18 @@ public class DetailFragment extends Fragment {
   }
 
   @Override
-  public boolean onOptionsItemSelected(final MenuItem item) {
-    switch (item.getItemId()) {
-      case android.R.id.home:
-        Log.d("DetailFragment", "Backhome");
-        return true;
-      default:
-        return super.onOptionsItemSelected(item);
-    }
+  public void onDestroyView() {
+    super.onDestroyView();
+    fIsFromOutsideNotif = false;
   }
 
   @Override
   public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    // Inflate the layout for this fragment
-    View view = inflater.inflate(R.layout.fragment_detail, container, false);
+    View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
+    setHasOptionsMenu(true);
+    setRetainInstance(true);
 
-    if (getActivity() != null) {
-      final AppCompatActivity ctx = (AppCompatActivity) getActivity();
-
-      ctx.setSupportActionBar((Toolbar) view.findViewById(R.id.toolbar));
-      if (ctx.getSupportActionBar() != null) {
-        ctx.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-      }
-    }
-
+    fToolbar = view.findViewById(R.id.toolbar);
     fItemImageView = view.findViewById(R.id.detailImage);
     fItemTitleView = view.findViewById(R.id.detailTitle);
     fItemDateView = view.findViewById(R.id.detailDate);
@@ -108,6 +98,21 @@ public class DetailFragment extends Fragment {
     fAppBarView = view.findViewById(R.id.detailAppBar);
     fCollapsingToolbarView = view.findViewById(R.id.detailImageCollapsingToolbar);
     fCollapsingToolbarView.setExpandedTitleColor(Color.parseColor("#00FFFFFF"));
+
+    if (getActivity() != null) {
+      MoviesActivity activity = (MoviesActivity) getActivity();
+      activity.setSupportActionBar(fToolbar);
+      if (activity.getSupportActionBar() != null) {
+        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+      }
+    }
+
+    return view;
+  }
+
+  @Override
+  public void onActivityCreated(@Nullable final Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
 
     if (fResult != null) {
       if (getActivity() != null) {
@@ -158,7 +163,29 @@ public class DetailFragment extends Fragment {
         }
       }
     }
+    setupListener();
+  }
 
+  @Override
+  public boolean onOptionsItemSelected(final MenuItem item) {
+    switch (item.getItemId()) {
+      case android.R.id.home:
+        if (getActivity() != null) {
+          MoviesActivity activity = (MoviesActivity) getActivity();
+          if (fIsFromOutsideNotif) {
+            activity.replaceFragment(NowPlayingMovieFragment.newInstance(),
+                NowPlayingMovieFragment.class.getSimpleName());
+          } else {
+            activity.onBackPressed();
+          }
+        }
+        return true;
+      default:
+        return super.onOptionsItemSelected(item);
+    }
+  }
+
+  private void setupListener() {
     fAppBarView.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
       @Override
       public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -206,8 +233,14 @@ public class DetailFragment extends Fragment {
         }
       }
     });
+  }
 
-    return view;
+  public final void setFromOutsideNotif(boolean aIsFromNotif) {
+    fIsFromOutsideNotif = aIsFromNotif;
+  }
+
+  public final boolean isFromOutsideNotif() {
+    return fIsFromOutsideNotif;
   }
 
   private void showSnackbarMessage(String message) {
@@ -216,8 +249,8 @@ public class DetailFragment extends Fragment {
     }
   }
 
-  public static DetailFragment newInstance(Result aResult) {
-    DetailFragment fragment = new DetailFragment();
+  public static DetailMovieFragment newInstance(Result aResult) {
+    DetailMovieFragment fragment = new DetailMovieFragment();
     Bundle args = new Bundle();
     args.putSerializable(ARG_PARAM, aResult);
     fragment.setArguments(args);

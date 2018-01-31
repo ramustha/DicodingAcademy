@@ -1,6 +1,7 @@
 package com.ramusthastudio.cataloguemovie.fragment;
 
 import android.os.Bundle;
+import com.ramusthastudio.cataloguemovie.R;
 import com.ramusthastudio.cataloguemovie.model.Result;
 
 import static com.ramusthastudio.cataloguemovie.BuildConfig.LANGUAGE;
@@ -10,7 +11,12 @@ import static com.ramusthastudio.cataloguemovie.BuildConfig.SERVER_URL;
 public class TopRatedMovieFragment extends AbstractMovieFragment {
 
   @Override
-  protected String pathSource() {
+  protected int title() {
+    return R.string.menu_top_rated;
+  }
+
+  @Override
+  protected String sourcePath() {
     return SERVER_URL + "/movie/top_rated?api_key=" + SERVER_API
         + "&language=" + LANGUAGE;
   }

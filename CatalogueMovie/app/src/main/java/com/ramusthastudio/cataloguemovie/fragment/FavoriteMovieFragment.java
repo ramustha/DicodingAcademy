@@ -1,7 +1,7 @@
 package com.ramusthastudio.cataloguemovie.fragment;
 
-import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.Settings;
@@ -10,41 +10,46 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import com.firebase.jobdispatcher.JobParameters;
 import com.ramusthastudio.cataloguemovie.MoviesActivity;
-import com.ramusthastudio.cataloguemovie.service.MovieListAdapter;
 import com.ramusthastudio.cataloguemovie.R;
-import com.ramusthastudio.cataloguemovie.service.Tasks;
-import com.ramusthastudio.cataloguemovie.common.EndlessRecyclerViewScrollListener;
-import com.ramusthastudio.cataloguemovie.model.Moviedb;
 import com.ramusthastudio.cataloguemovie.model.Result;
+import com.ramusthastudio.cataloguemovie.repo.DatabaseContract;
+import com.ramusthastudio.cataloguemovie.service.MovieListAdapter;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import static com.ramusthastudio.cataloguemovie.BuildConfig.LANGUAGE;
-import static com.ramusthastudio.cataloguemovie.BuildConfig.SERVER_API;
-import static com.ramusthastudio.cataloguemovie.BuildConfig.SERVER_URL;
+import static android.provider.BaseColumns._ID;
+import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.CONTENT_URI;
+import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.BACKDROP;
+import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.GENRE;
+import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.OVERVIEW;
+import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.POPULARITY;
+import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.POSTER;
+import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.RATING;
+import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.RELEASE_DATE;
+import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.TITLE;
 import static com.ramusthastudio.cataloguemovie.service.MovieListAdapter.sDateFormat;
 
-public abstract class AbstractMovieFragment extends Fragment
-    implements NavigationView.OnNavigationItemSelectedListener, Tasks.TaskListener<Moviedb> {
-  public static final String ARG_PARAM = "result";
+public class FavoriteMovieFragment extends Fragment
+    implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor> {
   private static final String ADAPTER_STATE = "adapter_state";
+  private static final int LOADER_ID = 98;
   private DrawerLayout fDrawerLayout;
   private NavigationView fNavigationView;
   private ActionBarDrawerToggle fDrawerToggle;
@@ -53,24 +58,12 @@ public abstract class AbstractMovieFragment extends Fragment
   private RecyclerView fMovieListView;
   private MovieListAdapter fMovieListAdapter;
   private StaggeredGridLayoutManager fGridLayoutManager;
-  private EndlessRecyclerViewScrollListener fScrollListener;
-  private Tasks<Moviedb> fTasks;
   private FloatingActionButton fToTopFab;
   private View fMovieEmpty;
   private List<Result> fCurrentMovieList;
-  private String fPathUrl;
-  private int fCurrentPage = 0;
 
-  public AbstractMovieFragment() {
+  public FavoriteMovieFragment() {
     // Required empty public constructor
-  }
-
-  @Override public Class<Moviedb> toClass() { return Moviedb.class; }
-
-  @Override
-  public void onAttach(final Context context) {
-    super.onAttach(context);
-    fPathUrl = sourcePath();
   }
 
   @Override
@@ -78,11 +71,10 @@ public abstract class AbstractMovieFragment extends Fragment
     super.onSaveInstanceState(outState);
     outState.putParcelable(ADAPTER_STATE, fGridLayoutManager.onSaveInstanceState());
     fCurrentMovieList = fMovieListAdapter.getMovieList();
-    fCurrentPage = fScrollListener.getCurrentPage();
   }
 
   @Override
-  public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+  public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
     setHasOptionsMenu(true);
     setRetainInstance(true);
@@ -102,7 +94,7 @@ public abstract class AbstractMovieFragment extends Fragment
     if (getActivity() != null) {
       MoviesActivity activity = (MoviesActivity) getActivity();
       activity.setSupportActionBar(fToolbar);
-      fToolbar.setTitle(title());
+      fToolbar.setTitle(getString(R.string.menu_favorite));
     }
     return view;
   }
@@ -121,12 +113,8 @@ public abstract class AbstractMovieFragment extends Fragment
     if (savedInstanceState != null) {
       final Parcelable adapterState = savedInstanceState.getParcelable(ADAPTER_STATE);
       fGridLayoutManager.onRestoreInstanceState(adapterState);
-
     } else {
-      if (fTasks == null) {
-        fTasks = new Tasks<>(this);
-        fTasks.start(fPathUrl);
-      }
+      initLoader();
     }
 
     if (fCurrentMovieList != null) {
@@ -138,37 +126,6 @@ public abstract class AbstractMovieFragment extends Fragment
     fMovieListView.setLayoutManager(fGridLayoutManager);
     fMovieListView.setAdapter(fMovieListAdapter);
     setupListener();
-  }
-
-  @Override
-  public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-    inflater.inflate(R.menu.general_search, menu);
-
-    final SearchView searchActionMenu = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-    final LinearLayout ln = searchActionMenu.findViewById(R.id.search_edit_frame);
-    ((LinearLayout.LayoutParams) ln.getLayoutParams()).leftMargin = 0;
-    searchActionMenu.setQueryHint(getString(R.string.menu_search_movie_hint));
-    searchActionMenu.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-      @Override
-      public boolean onQueryTextSubmit(final String query) {
-        Log.d(AbstractMovieFragment.class.getSimpleName(), query);
-        fTasks.start(SERVER_URL + "/search/movie?api_key=" + SERVER_API + "&language=" + LANGUAGE + "&sort_by=popularity.desc&query=" + query);
-
-        fMovieListAdapter.clear();
-        fScrollListener.resetState();
-        fScrollListener.setEnabled(false);
-
-        return query != null;
-      }
-      @Override public boolean onQueryTextChange(final String newText) { return false; }
-    });
-    searchActionMenu.setOnCloseListener(new SearchView.OnCloseListener() {
-      @Override
-      public boolean onClose() {
-        initAdapter();
-        return false;
-      }
-    });
   }
 
   @Override
@@ -211,8 +168,17 @@ public abstract class AbstractMovieFragment extends Fragment
   }
 
   @Override
+  public Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
+    if (getContext() == null) {
+      return null;
+    }
+    return new CursorLoader(getContext(), CONTENT_URI, null, null, null, null);
+  }
+
+  @Override
   public void onResume() {
     super.onResume();
+    resetLoader();
     fDrawerToggle = new ActionBarDrawerToggle(
         getActivity(), fDrawerLayout, fToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
     fDrawerLayout.addDrawerListener(fDrawerToggle);
@@ -226,36 +192,58 @@ public abstract class AbstractMovieFragment extends Fragment
   }
 
   @Override
-  public void onStartTask() {
-    fSwipeRefreshView.setRefreshing(true);
-  }
-
-  @Override
-  public void onSuccess(Moviedb aResponse, JobParameters aJobParameters) {
-    Log.d(AbstractMovieFragment.class.getSimpleName(), aResponse.toString());
-    fMovieListAdapter.setMovieList(aResponse.getResults());
+  public void onLoadFinished(final Loader<Cursor> loader, final Cursor data) {
+    fMovieListAdapter.clear();
+    fMovieListAdapter.setMovieList(toResult(data));
     fSwipeRefreshView.setRefreshing(false);
 
-    if (aResponse.getResults() == null || aResponse.getResults().isEmpty()) {
+    if (fMovieListAdapter.getItemCount() == 0) {
       onEmptyMovie();
     } else {
       onShowMovie();
     }
+    data.close();
   }
 
   @Override
-  public void onFailure(int statusCode, Throwable aThrowable, JobParameters aJobParameters) {
-    Log.d(AbstractMovieFragment.class.getSimpleName(), String.format("status %s, couse %s", statusCode, aThrowable));
-    fMovieListAdapter.setMovieList(null);
+  public void onLoaderReset(final Loader<Cursor> loader) {
+    fMovieListAdapter.clear();
     fSwipeRefreshView.setRefreshing(false);
     onEmptyMovie();
+  }
+
+  private void initLoader() {
+    if (getActivity() != null) {
+      getActivity()
+          .getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+    }
+  }
+
+  private void resetLoader() {
+    if (getActivity() != null) {
+      getActivity()
+          .getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
+    }
+  }
+
+  private void onEmptyMovie() {
+    fMovieEmpty.setVisibility(View.VISIBLE);
+    fMovieListView.setVisibility(View.GONE);
+    fToTopFab.setVisibility(View.GONE);
+  }
+
+  private void onShowMovie() {
+    fMovieEmpty.setVisibility(View.GONE);
+    fMovieListView.setVisibility(View.VISIBLE);
+    fToTopFab.setVisibility(View.VISIBLE);
   }
 
   private void setupListener() {
     fSwipeRefreshView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
       @Override
       public void onRefresh() {
-        initAdapter();
+        fToTopFab.hide();
+        fSwipeRefreshView.setEnabled(false);
       }
     });
 
@@ -266,18 +254,6 @@ public abstract class AbstractMovieFragment extends Fragment
         fMovieListView.smoothScrollToPosition(0);
       }
     });
-
-    fScrollListener = new EndlessRecyclerViewScrollListener(fGridLayoutManager, fCurrentPage) {
-      @Override
-      public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-        Log.d(AbstractMovieFragment.class.getSimpleName(), String.format("page %s, total items count %s", page, totalItemsCount));
-        fTasks.start(fPathUrl + "&page=" + page);
-      }
-      @Override public void onScrollYGreaterThanZero() { fToTopFab.show(); }
-      @Override public void onScrollYLessThanZero() { fToTopFab.hide(); }
-
-    };
-    fMovieListView.addOnScrollListener(fScrollListener);
 
     fMovieListAdapter.setOnClickListener(new MovieListAdapter.AdapterListener() {
       @Override
@@ -308,26 +284,43 @@ public abstract class AbstractMovieFragment extends Fragment
     });
   }
 
-  private void initAdapter() {
-    fToTopFab.hide();
-    fMovieListAdapter.clear();
-    fScrollListener.resetState();
-    fScrollListener.setEnabled(true);
-    fTasks.start(fPathUrl);
+  public List<Result> toResult(Cursor aCursor) {
+    List<Result> resultList = new ArrayList<>();
+    while (aCursor.moveToNext()) {
+      final int dbId = DatabaseContract.getColumnInt(aCursor, _ID);
+      final String title = DatabaseContract.getColumnString(aCursor, TITLE);
+      final String poster = DatabaseContract.getColumnString(aCursor, POSTER);
+      final String backdrop = DatabaseContract.getColumnString(aCursor, BACKDROP);
+      final long releaseDate = DatabaseContract.getColumnLong(aCursor, RELEASE_DATE);
+      final String genre = DatabaseContract.getColumnString(aCursor, GENRE);
+      final double rating = DatabaseContract.getColumnDouble(aCursor, RATING);
+      final String overview = DatabaseContract.getColumnString(aCursor, OVERVIEW);
+      final float popularity = DatabaseContract.getColumnFloat(aCursor, POPULARITY);
+
+      final String[] splited = genre.split(" ");
+      List<Integer> b = new ArrayList<>();
+      for (final String s : splited) {
+        b.add(Integer.valueOf(s));
+      }
+
+      resultList.add(new Result(
+          dbId,
+          title,
+          poster,
+          backdrop,
+          new Date(releaseDate),
+          b,
+          rating,
+          overview,
+          popularity
+      ));
+    }
+    return resultList;
   }
 
-  private void onEmptyMovie() {
-    fMovieEmpty.setVisibility(View.VISIBLE);
-    fMovieListView.setVisibility(View.GONE);
-    fToTopFab.setVisibility(View.GONE);
+  public static FavoriteMovieFragment newInstance() {
+    FavoriteMovieFragment fragment = new FavoriteMovieFragment();
+    fragment.setArguments(new Bundle());
+    return fragment;
   }
-
-  private void onShowMovie() {
-    fMovieEmpty.setVisibility(View.GONE);
-    fMovieListView.setVisibility(View.VISIBLE);
-    fToTopFab.setVisibility(View.VISIBLE);
-  }
-
-  protected abstract int title();
-  protected abstract String sourcePath();
 }

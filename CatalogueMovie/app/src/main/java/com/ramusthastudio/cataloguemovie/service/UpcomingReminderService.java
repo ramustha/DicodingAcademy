@@ -1,4 +1,4 @@
-package com.ramusthastudio.cataloguemovie;
+package com.ramusthastudio.cataloguemovie.service;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -15,20 +15,22 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.NotificationTarget;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
+import com.ramusthastudio.cataloguemovie.BuildConfig;
+import com.ramusthastudio.cataloguemovie.MoviesActivity;
+import com.ramusthastudio.cataloguemovie.R;
 import com.ramusthastudio.cataloguemovie.model.Moviedb;
 import com.ramusthastudio.cataloguemovie.model.Result;
 import java.util.Random;
 
-import static com.ramusthastudio.cataloguemovie.MovieListActivity.REQUEST_CODE;
-import static com.ramusthastudio.cataloguemovie.MovieListAdapter.sDateFormat;
 import static com.ramusthastudio.cataloguemovie.fragment.AbstractMovieFragment.ARG_PARAM;
 
-public final class MovieService extends JobService implements Tasks.TaskListener<Moviedb> {
-  public static final String DISPATCHER_TAG = "MovieService";
+public final class UpcomingReminderService extends JobService implements Tasks.TaskListener<Moviedb> {
+  private static final int UPCOMING_CODE = 222;
+  public static final String UPCOMING_REMIDER_TAG = "UpcomingReminderService";
   public static final String EXTRA_JOB_SERVICE = "extra_job_service";
   private final Tasks<Moviedb> fTasks;
 
-  public MovieService() {
+  public UpcomingReminderService() {
     fTasks = new Tasks<>(this);
   }
 
@@ -36,26 +38,26 @@ public final class MovieService extends JobService implements Tasks.TaskListener
 
   @Override
   public boolean onStartJob(JobParameters aJobParameters) {
-    Log.d(MovieService.class.getSimpleName(), "onStartJob() Executed");
+    Log.d(UpcomingReminderService.class.getSimpleName(), "UpcomingReminderService Executed");
     fTasks.start(aJobParameters);
     return true;
   }
 
   @Override public boolean onStopJob(JobParameters job) {
-    Log.d(MovieService.class.getSimpleName(), "onStopJob() Executed");
+    Log.d(UpcomingReminderService.class.getSimpleName(), "UpcomingReminderService Executed");
     return true;
   }
 
   @Override
   public void onSuccess(Moviedb aResponse, JobParameters aJobParameters) {
-    Log.d(MovieListActivity.class.getSimpleName(), aResponse.toString());
+    Log.d(MoviesActivity.class.getSimpleName(), aResponse.toString());
     showNotification(getApplicationContext(), aResponse, 100);
     jobFinished(aJobParameters, false);
   }
 
   @Override
   public void onFailure(int statusCode, Throwable aThrowable, JobParameters aJobParameters) {
-    Log.e(MovieListActivity.class.getSimpleName(), String.format("status %s, couse %s", statusCode, aThrowable));
+    Log.e(MoviesActivity.class.getSimpleName(), String.format("status %s, couse %s", statusCode, aThrowable));
     jobFinished(aJobParameters, false);
   }
 
@@ -67,7 +69,7 @@ public final class MovieService extends JobService implements Tasks.TaskListener
     NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-    Intent notificationIntent = new Intent(context, MovieListActivity.class);
+    Intent notificationIntent = new Intent(context, MoviesActivity.class);
     notificationIntent.putExtra(ARG_PARAM, movie);
     notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
@@ -79,18 +81,19 @@ public final class MovieService extends JobService implements Tasks.TaskListener
       builder = new NotificationCompat.Builder(context);
     }
 
-    final PendingIntent intent = PendingIntent.getActivity(context, REQUEST_CODE, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+    final PendingIntent intent = PendingIntent.getActivity(context, UPCOMING_CODE, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
     final RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.movie_notification);
     remoteViews.setImageViewResource(R.id.notifImageView, R.mipmap.ic_launcher_round);
     remoteViews.setTextViewText(R.id.notifTitleView, movie.getTitle());
     remoteViews.setTextViewText(R.id.notifRatingView, String.valueOf(movie.getVoteAverage()));
-    remoteViews.setTextViewText(R.id.notifReleaseView, sDateFormat.format(movie.getReleaseDate()));
+    remoteViews.setTextViewText(R.id.notifReleaseView, MovieListAdapter.sDateFormat.format(movie.getReleaseDate()));
 
     builder.setContentTitle(movie.getTitle())
         .setSmallIcon(R.mipmap.ic_launcher_round)
         .setContent(remoteViews)
         .setContentIntent(intent)
+        // .setAutoCancel(true)
         .setSound(alarmSound);
 
     final Notification notification = builder.build();
