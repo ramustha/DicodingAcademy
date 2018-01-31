@@ -1,4 +1,4 @@
-package com.ramusthastudio.cataloguemovie;
+package com.ramusthastudio.cataloguemovie.fragment;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,12 +13,17 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
+import com.ramusthastudio.cataloguemovie.BuildConfig;
+import com.ramusthastudio.cataloguemovie.Genre;
+import com.ramusthastudio.cataloguemovie.R;
 import com.ramusthastudio.cataloguemovie.model.Result;
 import com.ramusthastudio.cataloguemovie.repo.DatabaseContract;
 import java.text.SimpleDateFormat;
@@ -65,6 +70,17 @@ public class DetailFragment extends Fragment {
     }
 
     fResult = (Result) getArguments().getSerializable(ARG_PARAM);
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(final MenuItem item) {
+    switch (item.getItemId()) {
+      case android.R.id.home:
+        Log.d("DetailFragment", "Backhome");
+        return true;
+      default:
+        return super.onOptionsItemSelected(item);
+    }
   }
 
   @Override

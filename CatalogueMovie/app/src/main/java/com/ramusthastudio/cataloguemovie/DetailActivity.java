@@ -7,11 +7,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import com.ramusthastudio.cataloguemovie.fragment.DetailFragment;
 import com.ramusthastudio.cataloguemovie.model.Result;
 
-import static com.ramusthastudio.cataloguemovie.DetailFragment.ARG_PARAM;
+import static com.ramusthastudio.cataloguemovie.fragment.AbstractMovieFragment.ARG_PARAM;
 
 public class DetailActivity extends AppCompatActivity {
 

@@ -71,7 +71,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     return this;
   }
 
-  interface AdapterListener {
+  public interface AdapterListener {
     void onClick(Result aResult);
     void onClickShare(Result aResult);
   }

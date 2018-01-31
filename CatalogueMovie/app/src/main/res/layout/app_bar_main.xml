@@ -25,12 +25,41 @@
 
   </android.support.design.widget.AppBarLayout>
 
-  <FrameLayout
-      android:id="@+id/fragment_container"
+  <RelativeLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      app:layout_behavior="@string/appbar_scrolling_view_behavior"
-      tools:context="com.ramusthastudio.cataloguemovie.MovieListActivity"
-      tools:showIn="@layout/app_bar_main"/>
+      tools:context=".MovieListActivity">
+
+    <include
+        android:id="@+id/movieEmpty"
+        layout="@layout/movie_empty_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+      <android.support.v7.widget.RecyclerView
+          android:id="@+id/movieList"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:visibility="gone"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_arrow_up"
+        android:visibility="gone"/>
+  </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

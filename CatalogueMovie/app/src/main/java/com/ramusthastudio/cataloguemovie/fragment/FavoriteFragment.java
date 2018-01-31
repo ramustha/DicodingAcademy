@@ -1,4 +1,4 @@
-package com.ramusthastudio.cataloguemovie;
+package com.ramusthastudio.cataloguemovie.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +17,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.ramusthastudio.cataloguemovie.DetailActivity;
+import com.ramusthastudio.cataloguemovie.MovieListAdapter;
+import com.ramusthastudio.cataloguemovie.R;
 import com.ramusthastudio.cataloguemovie.model.Result;
 import com.ramusthastudio.cataloguemovie.repo.DatabaseContract;
 import java.util.ArrayList;
@@ -24,8 +27,8 @@ import java.util.Date;
 import java.util.List;
 
 import static android.provider.BaseColumns._ID;
-import static com.ramusthastudio.cataloguemovie.DetailFragment.ARG_PARAM;
 import static com.ramusthastudio.cataloguemovie.MovieListAdapter.sDateFormat;
+import static com.ramusthastudio.cataloguemovie.fragment.DetailFragment.ARG_PARAM;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.CONTENT_URI;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.BACKDROP;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.GENRE;

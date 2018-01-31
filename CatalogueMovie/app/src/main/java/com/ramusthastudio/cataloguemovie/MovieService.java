@@ -19,9 +19,9 @@ import com.ramusthastudio.cataloguemovie.model.Moviedb;
 import com.ramusthastudio.cataloguemovie.model.Result;
 import java.util.Random;
 
-import static com.ramusthastudio.cataloguemovie.AbstractMovieFragment.ARG_PARAM;
 import static com.ramusthastudio.cataloguemovie.MovieListActivity.REQUEST_CODE;
 import static com.ramusthastudio.cataloguemovie.MovieListAdapter.sDateFormat;
+import static com.ramusthastudio.cataloguemovie.fragment.AbstractMovieFragment.ARG_PARAM;
 
 public final class MovieService extends JobService implements Tasks.TaskListener<Moviedb> {
   public static final String DISPATCHER_TAG = "MovieService";

@@ -1,6 +1,5 @@
 package com.ramusthastudio.cataloguemovie;
 
-import android.accounts.NetworkErrorException;
 import android.os.Bundle;
 import android.util.Log;
 import com.firebase.jobdispatcher.JobParameters;
@@ -20,54 +19,10 @@ public final class Tasks<T> {
     fListener = aListener;
   }
 
-  interface TaskListener<T> {
-    void onStartTask();
-    void onSuccess(T aResponse, JobParameters aJobParameters);
-    void onFailure(int statusCode, Throwable aThrowable, JobParameters aJobParameters);
-    Class<T> toClass();
-  }
-
   public void start(String aUrl) {
     Log.d(TAG, "Running");
 
-    sHttpClient.get(aUrl, new BaseJsonHttpResponseHandler<T>() {
-
-      @Override public void onStart() {
-        if (fListener != null) {
-          fListener.onStartTask();
-        }
-      }
-
-      @Override
-      public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, T response) {
-        Log.d(TAG, "Moviedb " + response);
-
-        if (response == null) {
-          throw new NullPointerException("Moviedb cant be null");
-        }
-
-        if (fListener != null) {
-          fListener.onSuccess(response, null);
-        }
-      }
-
-      @Override
-      public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, T errorResponse) {
-        Log.e(TAG, "onFailure ", throwable);
-        if (fListener != null) {
-          fListener.onFailure(statusCode, throwable, null);
-        }
-      }
-
-      @Override
-      protected T parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
-        Log.d(TAG, "parseResponse " + rawJsonData + " isFailure " + isFailure);
-        if (isFailure) {
-          throw new NetworkErrorException("Failure");
-        }
-        return CustomGson.instance().fromJson(rawJsonData, fListener.toClass());
-      }
-    });
+    sHttpClient.get(aUrl, new HttpHandler(null));
   }
 
   public void start(final JobParameters aJobParameters) {
@@ -79,40 +34,63 @@ public final class Tasks<T> {
       return;
     }
 
-    sHttpClient.get(extra.getString(EXTRA_JOB_SERVICE), new BaseJsonHttpResponseHandler<T>() {
+    sHttpClient.get(extra.getString(EXTRA_JOB_SERVICE), new HttpHandler(aJobParameters));
+  }
 
-      @Override public void onStart() {
-        if (fListener != null) {
-          fListener.onStartTask();
-        }
+  public interface TaskListener<T> {
+    void onStartTask();
+    void onSuccess(T aResponse, JobParameters aJobParameters);
+    void onFailure(int statusCode, Throwable aThrowable, JobParameters aJobParameters);
+    Class<T> toClass();
+  }
+
+  private final class HttpHandler extends BaseJsonHttpResponseHandler<T> {
+    private final JobParameters fParameters;
+
+    private HttpHandler(JobParameters aJobParameters) {
+      fParameters = aJobParameters;
+    }
+
+    @Override
+    public void onStart() {
+      if (fListener != null) {
+        fListener.onStartTask();
+      }
+    }
+
+    @Override
+    public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, T response) {
+      Log.d(TAG, "Moviedb " + response);
+
+      if (response == null) {
+        throw new NullPointerException("Moviedb cant be null");
       }
 
-      @Override
-      public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, T response) {
-        Log.d(TAG, "Moviedb " + response);
-
-        if (response == null) {
-          throw new NullPointerException("Moviedb cant be null");
-        }
-
-        if (fListener != null) {
-          fListener.onSuccess(response, aJobParameters);
+      if (fListener != null) {
+        if (fParameters != null) {
+          fListener.onSuccess(response, fParameters);
+        } else {
+          fListener.onSuccess(response, null);
         }
       }
+    }
 
-      @Override
-      public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, T errorResponse) {
-        Log.e(TAG, "onFailure ", throwable);
-        if (fListener != null) {
-          fListener.onFailure(statusCode, throwable, aJobParameters);
+    @Override
+    public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, T errorResponse) {
+      Log.e(TAG, "onFailure ", throwable);
+      if (fListener != null) {
+        if (fParameters != null) {
+          fListener.onFailure(statusCode, throwable, fParameters);
+        } else {
+          fListener.onFailure(statusCode, throwable, null);
         }
       }
+    }
 
-      @Override
-      protected T parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
-        Log.d(TAG, "parseResponse " + rawJsonData + " isFailure " + isFailure);
-        return CustomGson.instance().fromJson(rawJsonData, fListener.toClass());
-      }
-    });
+    @Override
+    protected T parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
+      Log.d(TAG, "parseResponse " + rawJsonData + " isFailure " + isFailure);
+      return CustomGson.instance().fromJson(rawJsonData, fListener.toClass());
+    }
   }
 }

@@ -1,4 +1,4 @@
-package com.ramusthastudio.cataloguemovie;
+package com.ramusthastudio.cataloguemovie.fragment;
 
 import android.os.Bundle;
 import com.ramusthastudio.cataloguemovie.model.Result;
