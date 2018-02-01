@@ -34,7 +34,7 @@ public class MoviesActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_movies);
 
-    if (getIntent().getAction() != null && getIntent().getAction().equals(CLICK_ACTION)) {
+    if (getIntent().getIntExtra(CLICK_ACTION, 0) != 0) {
       Toast.makeText(this, "From Widget " + getIntent().getIntExtra(CLICK_ACTION, 0), Toast.LENGTH_SHORT).show();
     } else {
       if (getIntent().getSerializableExtra(ARG_PARAM) != null) {

@@ -222,10 +222,10 @@ public class DetailMovieFragment extends Fragment {
               showSnackbarMessage(getString(R.string.save_fav_success));
             }
 
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getActivity());
-            RemoteViews remoteViews = new RemoteViews(getActivity().getPackageName(), R.layout.favorite_movie_widget);
-            ComponentName thisWidget = new ComponentName(getActivity(), FavoriteWidget.class);
-            appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+            // AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getActivity());
+            // RemoteViews remoteViews = new RemoteViews(getActivity().getPackageName(), R.layout.favorite_movie_widget);
+            // ComponentName thisWidget = new ComponentName(getActivity(), FavoriteWidget.class);
+            // appWidgetManager.updateAppWidget(thisWidget, remoteViews);
           }
         }
       }

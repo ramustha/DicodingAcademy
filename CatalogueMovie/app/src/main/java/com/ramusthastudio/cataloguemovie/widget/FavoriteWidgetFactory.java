@@ -45,12 +45,47 @@ public final class FavoriteWidgetFactory implements RemoteViewsService.RemoteVie
 
   @Override public int getCount() { return fWidgetItems.size(); }
   @Override public int getViewTypeCount() { return 1; }
-  @Override public long getItemId(final int position) { return 0; }
-  @Override public boolean hasStableIds() { return false; }
+  @Override public long getItemId(final int position) { return position; }
+  @Override public boolean hasStableIds() { return true; }
   @Override public RemoteViews getLoadingView() { return null; }
 
   @Override
   public void onCreate() {
+    fillDataFromResolver();
+  }
+
+  @Override
+  public RemoteViews getViewAt(final int position) {
+    final Bitmap poster = fWidgetItems.get(position).getBackdropPath();
+    final String title = fWidgetItems.get(position).getTitle() + "(" + fWidgetItems.get(position).getVoteAverage() + ")";
+
+    RemoteViews remoteViews = new RemoteViews(fContext.getPackageName(), R.layout.favorite_movie_widget_item);
+    remoteViews.setImageViewBitmap(R.id.widget_item_image_view, poster);
+    remoteViews.setTextViewText(R.id.widget_item_title_view, title);
+
+    Bundle extras = new Bundle();
+    extras.putInt(FavoriteWidget.EXTRA_ID, fWidgetItems.get(position).getId());
+    Intent fillInIntent = new Intent();
+    fillInIntent.putExtras(extras);
+
+    remoteViews.setOnClickFillInIntent(R.id.widget_item_image_view, fillInIntent);
+
+    return remoteViews;
+  }
+
+  @Override
+  public void onDataSetChanged() {
+    Log.d("Favorite Widget", "onDataSetChanged");
+    // fWidgetItems.clear();
+    // fillDataFromResolver();
+  }
+
+  @Override
+  public void onDestroy() {
+    fWidgetItems.clear();
+  }
+
+  private void fillDataFromResolver() {
     final ContentResolver resolver = fContext.getContentResolver();
     final Cursor cursor = resolver.query(CONTENT_URI, null, null, null, null);
     if (cursor != null) {
@@ -86,32 +121,4 @@ public final class FavoriteWidgetFactory implements RemoteViewsService.RemoteVie
     }
   }
 
-  @Override
-  public RemoteViews getViewAt(final int position) {
-    final Bitmap poster = fWidgetItems.get(position).getBackdropPath();
-    final String title = fWidgetItems.get(position).getTitle() + "(" + fWidgetItems.get(position).getVoteAverage() + ")";
-
-    RemoteViews remoteViews = new RemoteViews(fContext.getPackageName(), R.layout.favorite_movie_widget_item);
-    remoteViews.setImageViewBitmap(R.id.widget_item_image_view, poster);
-    remoteViews.setTextViewText(R.id.widget_item_title_view, title);
-
-    Bundle extras = new Bundle();
-    extras.putInt(FavoriteWidget.EXTRA_ID, fWidgetItems.get(position).getId());
-    Intent fillInIntent = new Intent();
-    fillInIntent.putExtras(extras);
-
-    remoteViews.setOnClickFillInIntent(R.id.widget_item_image_view, fillInIntent);
-
-    return remoteViews;
-  }
-
-  @Override
-  public void onDataSetChanged() {
-    Log.d("Favorite Widget", "onDataSetChanged");
-  }
-
-  @Override
-  public void onDestroy() {
-
-  }
 }
