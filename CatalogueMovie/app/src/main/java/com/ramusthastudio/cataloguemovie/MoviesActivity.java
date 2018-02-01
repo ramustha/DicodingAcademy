@@ -10,16 +10,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 import com.ramusthastudio.cataloguemovie.fragment.DetailMovieFragment;
 import com.ramusthastudio.cataloguemovie.fragment.NowPlayingMovieFragment;
 import com.ramusthastudio.cataloguemovie.model.Result;
 
 import static com.ramusthastudio.cataloguemovie.fragment.AbstractMovieFragment.ARG_PARAM;
+import static com.ramusthastudio.cataloguemovie.widget.FavoriteWidget.CLICK_ACTION;
 
 public class MoviesActivity extends AppCompatActivity {
-  public static final String FRAGMENT_INSTANCE = "fragment_state";
-  public String fLastTag;
-  public Fragment fCurrentFragment;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -35,18 +34,31 @@ public class MoviesActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_movies);
 
-    if (getIntent().getSerializableExtra(ARG_PARAM) != null) {
-      final Result result = (Result) getIntent().getSerializableExtra(ARG_PARAM);
-      final DetailMovieFragment fr = DetailMovieFragment.newInstance(result);
-      fr.setFromOutsideNotif(true);
-      replaceFragment(fr, DetailMovieFragment.class.getSimpleName());
+    if (getIntent().getAction() != null && getIntent().getAction().equals(CLICK_ACTION)) {
+      Toast.makeText(this, "From Widget " + getIntent().getIntExtra(CLICK_ACTION, 0), Toast.LENGTH_SHORT).show();
     } else {
-      if (savedInstanceState != null) {
-        final Fragment restored = getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_INSTANCE);
-        replaceFragment(restored, restored.getClass().getSimpleName());
+      if (getIntent().getSerializableExtra(ARG_PARAM) != null) {
+        final Result result = (Result) getIntent().getSerializableExtra(ARG_PARAM);
+        replaceFragment(
+            NowPlayingMovieFragment.newInstance(result, true),
+            NowPlayingMovieFragment.class.getSimpleName());
       } else {
-        replaceFragment(NowPlayingMovieFragment.newInstance(), NowPlayingMovieFragment.class.getSimpleName());
+        if (savedInstanceState == null) {
+          replaceFragment(NowPlayingMovieFragment.newInstance(),
+              NowPlayingMovieFragment.class.getSimpleName());
+        }
       }
+    }
+
+  }
+
+  @Override
+  public void onBackPressed() {
+    FragmentManager fm = getSupportFragmentManager();
+    if (fm.findFragmentByTag(DetailMovieFragment.class.getSimpleName()) != null) {
+      super.onBackPressed();
+    } else {
+      finish();
     }
   }
 
@@ -56,62 +68,31 @@ public class MoviesActivity extends AppCompatActivity {
 
     if (intent.getSerializableExtra(ARG_PARAM) != null) {
       final Result result = (Result) intent.getSerializableExtra(ARG_PARAM);
-      final FragmentManager fm = getSupportFragmentManager();
-      final int count = fm.getBackStackEntryCount();
-      final DetailMovieFragment fr = DetailMovieFragment.newInstance(result);
-
-      if (count > 1) {
-        replaceFragment(
-            fr,
-            DetailMovieFragment.class.getSimpleName());
-      } else {
-        showDetailFragment(
-            fr,
-            DetailMovieFragment.class.getSimpleName(),
-            DetailMovieFragment.class.getSimpleName());
-      }
+      showDetailFragment(
+          DetailMovieFragment.newInstance(result),
+          DetailMovieFragment.class.getSimpleName());
     }
   }
 
-  @Override
-  protected void onSaveInstanceState(Bundle outState) {
-    super.onSaveInstanceState(outState);
-    final FragmentManager fm = getSupportFragmentManager();
-    fm.putFragment(outState, FRAGMENT_INSTANCE, fCurrentFragment);
-  }
-
-  @Override
-  public void onBackPressed() {
-    final FragmentManager fm = getSupportFragmentManager();
-    fCurrentFragment = fm.findFragmentByTag(fLastTag);
-    super.onBackPressed();
-  }
-
-  public final void replaceFragment(Fragment aFragment, String aTag) {
-    fLastTag = aTag;
-    fCurrentFragment = aFragment;
-    FragmentManager mFragmentManager = getSupportFragmentManager();
-    FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
-    mFragmentTransaction
-        .replace(R.id.fragment_container, aFragment, aTag)
+  public final void replaceFragment(Fragment aFragment, String aName) {
+    FragmentManager fm = getSupportFragmentManager();
+    FragmentTransaction transaction = fm.beginTransaction();
+    transaction
+        .replace(R.id.fragment_container, aFragment, aName)
         .commit();
   }
 
-  public final void showDetailFragment(Fragment aFragment, String aTag, String aName) {
-    fCurrentFragment = aFragment;
-    FragmentManager mFragmentManager = getSupportFragmentManager();
-    FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
+  public final void showDetailFragment(Fragment aFragment, String aName) {
+    FragmentManager fm = getSupportFragmentManager();
+    FragmentTransaction mFragmentTransaction = fm.beginTransaction();
     mFragmentTransaction
-        .addToBackStack(aName)
-        .replace(R.id.fragment_container, aFragment, aTag)
+        .addToBackStack(null)
+        .replace(R.id.fragment_container, aFragment, aName)
         .commit();
   }
 
   @SuppressLint("ApplySharedPref")
   public final void changeThemePref() {
-    final FragmentManager fm = getSupportFragmentManager();
-    fCurrentFragment = fm.findFragmentByTag(fLastTag);
-
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     final SharedPreferences.Editor edit = sp.edit();
     boolean useThemeLight = sp.getBoolean("useThemeLight", false);

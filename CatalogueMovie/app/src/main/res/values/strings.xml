@@ -9,6 +9,7 @@
   <string name="title">Title</string>
   <string name="overview">Overview</string>
   <string name="emptyorerror">Empty or Error</string>
+  <string name="empty_favorite">Empty Favorite</string>
   <string name="save_fav_success">Success saved to favorite</string>
   <string name="already_saved">Already favorited</string>
   <string name="daily_remider_text">Catalogue Movie missing you</string>

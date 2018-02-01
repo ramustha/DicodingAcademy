@@ -264,7 +264,6 @@ public class FavoriteMovieFragment extends Fragment
           fCurrentMovieList = fMovieListAdapter.getMovieList();
           activity.showDetailFragment(
               DetailMovieFragment.newInstance(aResult),
-              DetailMovieFragment.class.getSimpleName(),
               DetailMovieFragment.class.getSimpleName());
         }
       }

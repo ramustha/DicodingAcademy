@@ -93,7 +93,7 @@ public final class UpcomingReminderService extends JobService implements Tasks.T
         .setSmallIcon(R.mipmap.ic_launcher_round)
         .setContent(remoteViews)
         .setContentIntent(intent)
-        // .setAutoCancel(true)
+        .setAutoCancel(true)
         .setSound(alarmSound);
 
     final Notification notification = builder.build();

@@ -1,5 +1,7 @@
 package com.ramusthastudio.cataloguemovie.fragment;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -18,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.ramusthastudio.cataloguemovie.BuildConfig;
@@ -26,6 +29,7 @@ import com.ramusthastudio.cataloguemovie.MoviesActivity;
 import com.ramusthastudio.cataloguemovie.R;
 import com.ramusthastudio.cataloguemovie.model.Result;
 import com.ramusthastudio.cataloguemovie.repo.DatabaseContract;
+import com.ramusthastudio.cataloguemovie.widget.FavoriteWidget;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
@@ -42,6 +46,7 @@ import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColum
 
 public class DetailMovieFragment extends Fragment {
   protected static final String ARG_PARAM = "result";
+  protected static final String NOTIF_PARAM = "notif_param";
   private static final SimpleDateFormat sDateFormat = new SimpleDateFormat("E, dd-MM-yyyy", Locale.getDefault());
   private Toolbar fToolbar;
   private ImageView fItemImageView;
@@ -57,8 +62,6 @@ public class DetailMovieFragment extends Fragment {
   private boolean fIsFavorited;
   private AppBarLayout fAppBarView;
   private CollapsingToolbarLayout fCollapsingToolbarView;
-  private boolean fIsFromOutsideNotif;
-
   public DetailMovieFragment() {
     // Required empty public constructor
   }
@@ -72,12 +75,6 @@ public class DetailMovieFragment extends Fragment {
     }
 
     fResult = (Result) getArguments().getSerializable(ARG_PARAM);
-  }
-
-  @Override
-  public void onDestroyView() {
-    super.onDestroyView();
-    fIsFromOutsideNotif = false;
   }
 
   @Override
@@ -172,12 +169,7 @@ public class DetailMovieFragment extends Fragment {
       case android.R.id.home:
         if (getActivity() != null) {
           MoviesActivity activity = (MoviesActivity) getActivity();
-          if (fIsFromOutsideNotif) {
-            activity.replaceFragment(NowPlayingMovieFragment.newInstance(),
-                NowPlayingMovieFragment.class.getSimpleName());
-          } else {
-            activity.onBackPressed();
-          }
+          activity.onBackPressed();
         }
         return true;
       default:
@@ -229,18 +221,15 @@ public class DetailMovieFragment extends Fragment {
               fFavoriteView.setImageResource(android.R.drawable.star_big_on);
               showSnackbarMessage(getString(R.string.save_fav_success));
             }
+
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getActivity());
+            RemoteViews remoteViews = new RemoteViews(getActivity().getPackageName(), R.layout.favorite_movie_widget);
+            ComponentName thisWidget = new ComponentName(getActivity(), FavoriteWidget.class);
+            appWidgetManager.updateAppWidget(thisWidget, remoteViews);
           }
         }
       }
     });
-  }
-
-  public final void setFromOutsideNotif(boolean aIsFromNotif) {
-    fIsFromOutsideNotif = aIsFromNotif;
-  }
-
-  public final boolean isFromOutsideNotif() {
-    return fIsFromOutsideNotif;
   }
 
   private void showSnackbarMessage(String message) {

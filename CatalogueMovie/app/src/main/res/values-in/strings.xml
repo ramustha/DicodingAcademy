@@ -9,6 +9,7 @@
   <string name="title">Judul</string>
   <string name="overview">Ikhtisar</string>
   <string name="emptyorerror">Kosong atau Error</string>
+  <string name="empty_favorite">Favorit Kosong</string>
   <string name="save_fav_success">Sukses menyimpan ke favorit</string>
   <string name="already_saved">Sudah jadi favorit</string>
   <string name="daily_remider_text">Catalogue Movie kangen nih</string>

@@ -36,8 +36,19 @@
         android:readPermission="com.ramusthastudio.cataloguemovie.READ_DATABASE"
         android:writePermission="com.ramusthastudio.cataloguemovie.WRITE_DATABASE"/>
 
-    <receiver android:name=".widget.FavoriteWidget"/>
+    <receiver android:name=".widget.FavoriteWidget">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+      </intent-filter>
 
+      <meta-data
+          android:name="android.appwidget.provider"
+          android:resource="@xml/favorite_widget_info"/>
+    </receiver>
+
+    <service
+        android:name=".widget.FavoriteWidgetService"
+        android:permission="android.permission.BIND_REMOTEVIEWS"/>
     <service
         android:name=".service.UpcomingReminderService"
         android:exported="false">

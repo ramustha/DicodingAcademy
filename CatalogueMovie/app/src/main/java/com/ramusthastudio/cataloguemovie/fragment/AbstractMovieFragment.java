@@ -28,17 +28,18 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import com.firebase.jobdispatcher.JobParameters;
 import com.ramusthastudio.cataloguemovie.MoviesActivity;
-import com.ramusthastudio.cataloguemovie.service.MovieListAdapter;
 import com.ramusthastudio.cataloguemovie.R;
-import com.ramusthastudio.cataloguemovie.service.Tasks;
 import com.ramusthastudio.cataloguemovie.common.EndlessRecyclerViewScrollListener;
 import com.ramusthastudio.cataloguemovie.model.Moviedb;
 import com.ramusthastudio.cataloguemovie.model.Result;
+import com.ramusthastudio.cataloguemovie.service.MovieListAdapter;
+import com.ramusthastudio.cataloguemovie.service.Tasks;
 import java.util.List;
 
 import static com.ramusthastudio.cataloguemovie.BuildConfig.LANGUAGE;
 import static com.ramusthastudio.cataloguemovie.BuildConfig.SERVER_API;
 import static com.ramusthastudio.cataloguemovie.BuildConfig.SERVER_URL;
+import static com.ramusthastudio.cataloguemovie.fragment.DetailMovieFragment.NOTIF_PARAM;
 import static com.ramusthastudio.cataloguemovie.service.MovieListAdapter.sDateFormat;
 
 public abstract class AbstractMovieFragment extends Fragment
@@ -137,6 +138,7 @@ public abstract class AbstractMovieFragment extends Fragment
     fMovieListView.setHasFixedSize(true);
     fMovieListView.setLayoutManager(fGridLayoutManager);
     fMovieListView.setAdapter(fMovieListAdapter);
+
     setupListener();
   }
 
@@ -241,6 +243,8 @@ public abstract class AbstractMovieFragment extends Fragment
     } else {
       onShowMovie();
     }
+
+    fromNotif();
   }
 
   @Override
@@ -249,6 +253,24 @@ public abstract class AbstractMovieFragment extends Fragment
     fMovieListAdapter.setMovieList(null);
     fSwipeRefreshView.setRefreshing(false);
     onEmptyMovie();
+  }
+
+  private void fromNotif() {
+    if (getArguments() != null) {
+      final boolean isNotif = getArguments().getBoolean(NOTIF_PARAM);
+      if (isNotif) {
+        if (getActivity() != null) {
+          MoviesActivity activity = (MoviesActivity) getActivity();
+          final Result resultFromNotif = (Result) getArguments().getSerializable(ARG_PARAM);
+          fCurrentMovieList = fMovieListAdapter.getMovieList();
+
+          activity.showDetailFragment(
+              DetailMovieFragment.newInstance(resultFromNotif),
+              DetailMovieFragment.class.getSimpleName());
+          getArguments().clear();
+        }
+      }
+    }
   }
 
   private void setupListener() {
@@ -288,7 +310,6 @@ public abstract class AbstractMovieFragment extends Fragment
           fCurrentMovieList = fMovieListAdapter.getMovieList();
           activity.showDetailFragment(
               DetailMovieFragment.newInstance(aResult),
-              DetailMovieFragment.class.getSimpleName(),
               DetailMovieFragment.class.getSimpleName());
         }
       }

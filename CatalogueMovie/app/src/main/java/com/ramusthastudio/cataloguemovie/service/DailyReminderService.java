@@ -49,7 +49,7 @@ public final class DailyReminderService extends JobService {
         .setContentTitle(context.getString(R.string.app_name))
         .setContentText(context.getString(R.string.daily_remider_text))
         .setContentIntent(intent)
-        // .setAutoCancel(true)
+        .setAutoCancel(true)
         .setSound(alarmSound);
 
     if (notificationManagerCompat != null) {

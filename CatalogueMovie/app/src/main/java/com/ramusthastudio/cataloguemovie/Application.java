@@ -44,8 +44,8 @@ public class Application extends android.app.Application {
         // until_next_boot berarti hanya sampai next boot
         // forever berarti akan berjalan meskipun sudah reboot
         .setLifetime(Lifetime.UNTIL_NEXT_BOOT)
-        // .setTrigger(Trigger.executionWindow(0, 60 * 60))
-        .setTrigger(Trigger.executionWindow(0, 60))
+        .setTrigger(Trigger.executionWindow(0, 60 * 60))
+        // .setTrigger(Trigger.executionWindow(0, 60))
         // overwrite job dengan tag sama
         .setReplaceCurrent(true)
         // set waktu kapan akan dijalankan lagi jika gagal
@@ -77,8 +77,8 @@ public class Application extends android.app.Application {
         // until_next_boot berarti hanya sampai next boot
         // forever berarti akan berjalan meskipun sudah reboot
         .setLifetime(Lifetime.UNTIL_NEXT_BOOT)
-        // .setTrigger(Trigger.executionWindow(0, 60 * 60 * 24))
-        .setTrigger(Trigger.executionWindow(0, 60))
+        .setTrigger(Trigger.executionWindow(0, 60 * 60 * 24))
+        // .setTrigger(Trigger.executionWindow(0, 60))
         // overwrite job dengan tag sama
         .setReplaceCurrent(true)
         // set waktu kapan akan dijalankan lagi jika gagal
