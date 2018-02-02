@@ -2,6 +2,7 @@ package com.ramusthastudio.cataloguemovie.fragment;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.Settings;
@@ -45,6 +46,7 @@ import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColum
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.RELEASE_DATE;
 import static com.ramusthastudio.cataloguemovie.repo.DatabaseContract.MovieColumns.TITLE;
 import static com.ramusthastudio.cataloguemovie.service.MovieListAdapter.sDateFormat;
+import static com.ramusthastudio.cataloguemovie.widget.FavoriteWidget.EXTRA_ID;
 
 public class FavoriteMovieFragment extends Fragment
     implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor> {
@@ -126,6 +128,7 @@ public class FavoriteMovieFragment extends Fragment
     fMovieListView.setLayoutManager(fGridLayoutManager);
     fMovieListView.setAdapter(fMovieListAdapter);
     setupListener();
+    fromWidget();
   }
 
   @Override
@@ -202,7 +205,6 @@ public class FavoriteMovieFragment extends Fragment
     } else {
       onShowMovie();
     }
-    data.close();
   }
 
   @Override
@@ -210,6 +212,23 @@ public class FavoriteMovieFragment extends Fragment
     fMovieListAdapter.clear();
     fSwipeRefreshView.setRefreshing(false);
     onEmptyMovie();
+  }
+
+  private void fromWidget() {
+    if (getArguments() != null && getActivity() != null) {
+      if (getArguments().getInt(EXTRA_ID) != 0) {
+        MoviesActivity activity = (MoviesActivity) getActivity();
+        final int id = getArguments().getInt(EXTRA_ID);
+        final Cursor cursor = activity.getContentResolver()
+            .query(Uri.parse(CONTENT_URI + "/" + id), null, null, null, null);
+        final List<Result> result = toResult(cursor);
+
+        activity.showDetailFragment(
+            DetailMovieFragment.newInstance(result.get(0)),
+            DetailMovieFragment.class.getSimpleName());
+        getArguments().clear();
+      }
+    }
   }
 
   private void initLoader() {
@@ -314,12 +333,22 @@ public class FavoriteMovieFragment extends Fragment
           popularity
       ));
     }
+    aCursor.close();
     return resultList;
   }
 
   public static FavoriteMovieFragment newInstance() {
     FavoriteMovieFragment fragment = new FavoriteMovieFragment();
-    fragment.setArguments(new Bundle());
+    Bundle args = new Bundle();
+    fragment.setArguments(args);
+    return fragment;
+  }
+
+  public static FavoriteMovieFragment newInstance(int aId) {
+    FavoriteMovieFragment fragment = new FavoriteMovieFragment();
+    Bundle args = new Bundle();
+    args.putInt(EXTRA_ID, aId);
+    fragment.setArguments(args);
     return fragment;
   }
 }

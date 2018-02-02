@@ -12,11 +12,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 import com.ramusthastudio.cataloguemovie.fragment.DetailMovieFragment;
+import com.ramusthastudio.cataloguemovie.fragment.FavoriteMovieFragment;
 import com.ramusthastudio.cataloguemovie.fragment.NowPlayingMovieFragment;
 import com.ramusthastudio.cataloguemovie.model.Result;
 
 import static com.ramusthastudio.cataloguemovie.fragment.AbstractMovieFragment.ARG_PARAM;
 import static com.ramusthastudio.cataloguemovie.widget.FavoriteWidget.CLICK_ACTION;
+import static com.ramusthastudio.cataloguemovie.widget.FavoriteWidget.EXTRA_ID;
 
 public class MoviesActivity extends AppCompatActivity {
 
@@ -34,8 +36,11 @@ public class MoviesActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_movies);
 
-    if (getIntent().getIntExtra(CLICK_ACTION, 0) != 0) {
-      Toast.makeText(this, "From Widget " + getIntent().getIntExtra(CLICK_ACTION, 0), Toast.LENGTH_SHORT).show();
+    if (getIntent().getIntExtra(EXTRA_ID, 0) != 0) {
+      final int id = getIntent().getIntExtra(EXTRA_ID, 0);
+      replaceFragment(
+          FavoriteMovieFragment.newInstance(id),
+          FavoriteMovieFragment.class.getSimpleName());
     } else {
       if (getIntent().getSerializableExtra(ARG_PARAM) != null) {
         final Result result = (Result) getIntent().getSerializableExtra(ARG_PARAM);
@@ -49,7 +54,6 @@ public class MoviesActivity extends AppCompatActivity {
         }
       }
     }
-
   }
 
   @Override
@@ -86,8 +90,8 @@ public class MoviesActivity extends AppCompatActivity {
     FragmentManager fm = getSupportFragmentManager();
     FragmentTransaction mFragmentTransaction = fm.beginTransaction();
     mFragmentTransaction
-        .addToBackStack(null)
         .replace(R.id.fragment_container, aFragment, aName)
+        .addToBackStack(null)
         .commit();
   }
 

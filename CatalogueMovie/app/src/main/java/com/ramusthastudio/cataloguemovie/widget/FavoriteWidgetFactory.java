@@ -45,13 +45,18 @@ public final class FavoriteWidgetFactory implements RemoteViewsService.RemoteVie
 
   @Override public int getCount() { return fWidgetItems.size(); }
   @Override public int getViewTypeCount() { return 1; }
-  @Override public long getItemId(final int position) { return position; }
+  @Override public long getItemId(final int position) { return fWidgetItems.get(position).getId(); }
   @Override public boolean hasStableIds() { return true; }
   @Override public RemoteViews getLoadingView() { return null; }
 
   @Override
   public void onCreate() {
     fillDataFromResolver();
+
+    // We sleep for 3 seconds here to show how the empty view appears in the interim.
+    try {
+      Thread.sleep(3000);
+    } catch (InterruptedException ignored) { }
   }
 
   @Override
@@ -69,15 +74,23 @@ public final class FavoriteWidgetFactory implements RemoteViewsService.RemoteVie
     fillInIntent.putExtras(extras);
 
     remoteViews.setOnClickFillInIntent(R.id.widget_item_image_view, fillInIntent);
-
     return remoteViews;
   }
 
   @Override
   public void onDataSetChanged() {
     Log.d("Favorite Widget", "onDataSetChanged");
-    // fWidgetItems.clear();
-    // fillDataFromResolver();
+    // This is triggered when you call AppWidgetManager
+    // notifyAppWidgetViewDataChanged
+    // on the collection view corresponding to this factory. You can do
+    // heaving lifting in
+    // here, synchronously. For example, if you need to process an image,
+    // fetch something
+    // from the network, etc., it is ok to do it here, synchronously. The
+    // widget will remain
+    // in its current state while work is being done here, so you don't need
+    // to worry about
+    // locking up the widget.
   }
 
   @Override

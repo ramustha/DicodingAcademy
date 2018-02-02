@@ -21,7 +21,6 @@ public final class FavoriteWidget extends AppWidgetProvider {
     for (int appWidgetId : appWidgetIds) {
       updateAppWidget(context, appWidgetManager, appWidgetId);
     }
-    super.onUpdate(context, appWidgetManager, appWidgetIds);
   }
 
   @Override
@@ -30,9 +29,8 @@ public final class FavoriteWidget extends AppWidgetProvider {
       int viewId = intent.getIntExtra(EXTRA_ID, 0);
       final Intent dataIntent = new Intent(context, MoviesActivity.class);
       dataIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      dataIntent.putExtra(CLICK_ACTION, viewId);
+      dataIntent.putExtra(EXTRA_ID, viewId);
       context.startActivity(dataIntent);
-      Log.d("Favorite Widget", "onReceive");
     }
     super.onReceive(context, intent);
   }
@@ -51,8 +49,8 @@ public final class FavoriteWidget extends AppWidgetProvider {
     clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
     clickIntent.setData(Uri.parse(clickIntent.toUri(Intent.URI_INTENT_SCHEME)));
 
-    PendingIntent toastPendingIntent = PendingIntent.getBroadcast(context, 0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-    remoteViews.setPendingIntentTemplate(R.id.widget_stack_image, toastPendingIntent);
+    PendingIntent clickPendingIntent = PendingIntent.getBroadcast(context, 0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+    remoteViews.setPendingIntentTemplate(R.id.widget_stack_image, clickPendingIntent);
     appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
   }
 }
