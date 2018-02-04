@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -20,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RemoteViews;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.ramusthastudio.cataloguemovie.BuildConfig;
@@ -222,10 +222,16 @@ public class DetailMovieFragment extends Fragment {
               showSnackbarMessage(getString(R.string.save_fav_success));
             }
 
-            // AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getActivity());
-            // RemoteViews remoteViews = new RemoteViews(getActivity().getPackageName(), R.layout.favorite_movie_widget);
-            // ComponentName thisWidget = new ComponentName(getActivity(), FavoriteWidget.class);
-            // appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+            // if (getActivity() != null) {
+            //   Intent intent = new Intent(getActivity(), FavoriteWidget.class);
+            //   intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+            //   // Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
+            //   // since it seems the onUpdate() is only fired on that:
+            //   int[] ids = AppWidgetManager.getInstance(getActivity())
+            //       .getAppWidgetIds(new ComponentName(getActivity(), FavoriteWidget.class));
+            //   intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+            //   getActivity().sendBroadcast(intent);
+            // }
           }
         }
       }

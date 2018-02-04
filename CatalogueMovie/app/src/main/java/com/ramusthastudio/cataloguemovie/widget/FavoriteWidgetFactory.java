@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.os.Binder;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -80,17 +81,12 @@ public final class FavoriteWidgetFactory implements RemoteViewsService.RemoteVie
   @Override
   public void onDataSetChanged() {
     Log.d("Favorite Widget", "onDataSetChanged");
-    // This is triggered when you call AppWidgetManager
-    // notifyAppWidgetViewDataChanged
-    // on the collection view corresponding to this factory. You can do
-    // heaving lifting in
-    // here, synchronously. For example, if you need to process an image,
-    // fetch something
-    // from the network, etc., it is ok to do it here, synchronously. The
-    // widget will remain
-    // in its current state while work is being done here, so you don't need
-    // to worry about
-    // locking up the widget.
+    // final long token = Binder.clearCallingIdentity();
+    // try {
+    //   fillDataFromResolver();
+    // } finally {
+    //   Binder.restoreCallingIdentity(token);
+    // }
   }
 
   @Override

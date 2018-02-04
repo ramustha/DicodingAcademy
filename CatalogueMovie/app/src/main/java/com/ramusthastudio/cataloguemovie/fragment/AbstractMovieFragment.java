@@ -58,7 +58,7 @@ public abstract class AbstractMovieFragment extends Fragment
   private Tasks<Moviedb> fTasks;
   private FloatingActionButton fToTopFab;
   private View fMovieEmpty;
-  private List<Result> fCurrentMovieList;
+  private List<Result> fSavedMovieList;
   private String fPathUrl;
   private int fCurrentPage = 0;
 
@@ -78,7 +78,7 @@ public abstract class AbstractMovieFragment extends Fragment
   public void onSaveInstanceState(@NonNull final Bundle outState) {
     super.onSaveInstanceState(outState);
     outState.putParcelable(ADAPTER_STATE, fGridLayoutManager.onSaveInstanceState());
-    fCurrentMovieList = fMovieListAdapter.getMovieList();
+    fSavedMovieList = fMovieListAdapter.getMovieList();
     fCurrentPage = fScrollListener.getCurrentPage();
   }
 
@@ -130,8 +130,8 @@ public abstract class AbstractMovieFragment extends Fragment
       }
     }
 
-    if (fCurrentMovieList != null) {
-      fMovieListAdapter.setMovieList(fCurrentMovieList);
+    if (fSavedMovieList != null) {
+      fMovieListAdapter.setMovieList(fSavedMovieList);
       onShowMovie();
     }
 
@@ -250,7 +250,6 @@ public abstract class AbstractMovieFragment extends Fragment
   @Override
   public void onFailure(int statusCode, Throwable aThrowable, JobParameters aJobParameters) {
     Log.d(AbstractMovieFragment.class.getSimpleName(), String.format("status %s, couse %s", statusCode, aThrowable));
-    fMovieListAdapter.setMovieList(null);
     fSwipeRefreshView.setRefreshing(false);
     onEmptyMovie();
   }
@@ -262,7 +261,7 @@ public abstract class AbstractMovieFragment extends Fragment
         if (getActivity() != null) {
           MoviesActivity activity = (MoviesActivity) getActivity();
           final Result resultFromNotif = (Result) getArguments().getSerializable(ARG_PARAM);
-          fCurrentMovieList = fMovieListAdapter.getMovieList();
+          fSavedMovieList = fMovieListAdapter.getMovieList();
 
           activity.showDetailFragment(
               DetailMovieFragment.newInstance(resultFromNotif),
@@ -292,8 +291,13 @@ public abstract class AbstractMovieFragment extends Fragment
     fScrollListener = new EndlessRecyclerViewScrollListener(fGridLayoutManager, fCurrentPage) {
       @Override
       public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-        Log.d(AbstractMovieFragment.class.getSimpleName(), String.format("page %s, total items count %s", page, totalItemsCount));
-        fTasks.start(fPathUrl + "&page=" + page);
+        if (getActivity() != null) {
+          MoviesActivity activity = (MoviesActivity) getActivity();
+          if (activity.isNetworkConnected()) {
+            Log.d(AbstractMovieFragment.class.getSimpleName(), String.format("page %s, total items count %s", page, totalItemsCount));
+            fTasks.start(fPathUrl + "&page=" + page);
+          }
+        }
       }
       @Override public void onScrollYGreaterThanZero() { fToTopFab.show(); }
       @Override public void onScrollYLessThanZero() { fToTopFab.hide(); }
@@ -307,7 +311,7 @@ public abstract class AbstractMovieFragment extends Fragment
         Log.d(DetailMovieFragment.class.getSimpleName(), aResult.toString());
         if (getActivity() != null) {
           MoviesActivity activity = (MoviesActivity) getActivity();
-          fCurrentMovieList = fMovieListAdapter.getMovieList();
+          fSavedMovieList = fMovieListAdapter.getMovieList();
           activity.showDetailFragment(
               DetailMovieFragment.newInstance(aResult),
               DetailMovieFragment.class.getSimpleName());

@@ -1,8 +1,10 @@
 package com.ramusthastudio.cataloguemovie;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -10,14 +12,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
 import com.ramusthastudio.cataloguemovie.fragment.DetailMovieFragment;
 import com.ramusthastudio.cataloguemovie.fragment.FavoriteMovieFragment;
 import com.ramusthastudio.cataloguemovie.fragment.NowPlayingMovieFragment;
 import com.ramusthastudio.cataloguemovie.model.Result;
 
 import static com.ramusthastudio.cataloguemovie.fragment.AbstractMovieFragment.ARG_PARAM;
-import static com.ramusthastudio.cataloguemovie.widget.FavoriteWidget.CLICK_ACTION;
 import static com.ramusthastudio.cataloguemovie.widget.FavoriteWidget.EXTRA_ID;
 
 public class MoviesActivity extends AppCompatActivity {
@@ -110,5 +110,10 @@ public class MoviesActivity extends AppCompatActivity {
     }
     edit.commit();
     recreate();
+  }
+
+  public boolean isNetworkConnected() {
+    ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    return cm != null && cm.getActiveNetworkInfo() != null;
   }
 }
